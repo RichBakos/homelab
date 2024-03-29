@@ -1,0 +1,62 @@
+job "radarr" {
+  type        = "service"
+
+  group "radarr" {
+    count = 1
+
+    network {
+      port "http" { static = "7878" }
+    }
+
+    task "radarr" {
+      driver = "docker"
+
+      config {
+        image 	= "linuxserver/radarr"
+        network_mode = "host"				
+        ports 	= ["http"]
+        volumes = [
+          "${var.volumes}/radarr:/config",
+          "${var.downloads_dir}:/downloads",
+          "${var.movies_dir}:/media/movies",
+        ]
+      }
+
+      service {
+        name = "${NOMAD_JOB_NAME}"
+        port = "http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+        ]
+
+        check {
+          type     = "tcp"
+          interval = "60s"
+          timeout  = "20s"
+        }
+      }		      
+
+      resources {
+        cpu    = 1000
+        memory = 1024
+      }
+
+      template {
+        data = <<EOF
+{{- with nomadVar "nomad/jobs" }}
+PUID={{ .puid }}
+PGID={{ .pgid }}
+TZ={{ .tz }}
+{{- end }}
+EOF          
+        
+        env = true
+        destination = "local/env"
+      }      
+    }
+  }
+}

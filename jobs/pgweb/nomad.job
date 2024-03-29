@@ -1,0 +1,45 @@
+job "pgweb" {
+  type        = "service"
+
+  group "pgweb" {
+    count = 1
+
+    network {
+      port "http" { static = 8082 }
+    }
+
+    task "pgweb" {
+      driver = "docker"
+
+      config {
+        image        = "sosedoff/pgweb:0.11.6"
+        network_mode = "host"
+        ports        = ["http"]
+        command      = "/usr/bin/pgweb"
+        args         = ["--bind=0.0.0.0", "--listen=8082"]
+      }
+
+      service {
+        port = "http"
+        name = "${NOMAD_JOB_NAME}"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+        ]
+        check {
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
+      resources {
+        memory = 128
+      }
+    }
+  }
+}

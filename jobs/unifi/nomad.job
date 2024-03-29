@@ -1,0 +1,61 @@
+job "unifi" {
+  type = "service"
+
+  group "unifi" {
+    network {
+      port "http" { static = "8443" }
+    }
+
+    task "unifi" {
+      driver = "docker"
+
+      config {
+        image = "linuxserver/unifi-network-application"
+        network_mode = "host"			
+				ports = ["http"]	
+				volumes = [
+					"/mnt/volumes/unifi:/config",
+				  "/mnt/volumes/unifi/data/db:/data/db",
+          "/mnt/volumes/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
+        ]
+      }
+
+      service {
+        name = "${NOMAD_JOB_NAME}"
+        port = "http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.bakos.me`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
+          "traefik.http.services.${NOMAD_JOB_NAME}.loadbalancer.server.scheme=https",				
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth",
+        ]
+      }		      
+
+      resources {
+        cpu    = 1000
+        memory = 1024
+      }
+
+      template {
+        destination = "local/env"
+        env = true
+        data = <<EOF
+{{- with nomadVar "nomad/jobs" }}
+PUID={{ .puid }}
+PGID={{ .pgid }}
+TZ={{ .tz }}
+{{- end }}
+{{- with nomadVar "nomad/jobs/unifi" }}
+MONGO_USER={{ .mongo_user }}
+MONGO_PASS={{ .mongo_pass }}
+MONGO_HOST={{ .mongo_host }}
+MONGO_PORT={{ .mongo_port }}
+MONGO_DBNAME={{ .mongo_dbname }}
+{{- end }}
+EOF          
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+job "samba" {
+  type = "service"
+
+  group "samba" {
+    count = 1
+
+    network {
+      port "smb" { static = "445" }
+    }
+
+    task "samba" {
+      driver = "docker"
+
+      config {
+        image = "servercontainers/samba:latest"
+        network_mode = "host"				
+        ports = ["smb"]
+        volumes = [
+          "/mnt/homelab:/shares/homelab",
+        ]
+      }
+
+      service {
+        name = "${NOMAD_JOB_NAME}"
+        port = "smb"
+
+        check {
+          type     = "tcp"
+          interval = "60s"
+          timeout  = "20s"
+        }
+      }		      
+
+      resources {
+        cpu    = 200
+        memory = 256
+      }
+
+      template {
+        env = true
+        destination = "secrets/file.env"        
+        data = <<EOF
+{{- with nomadVar "nomad/jobs/samba" }}
+ACCOUNT_rbakos={{ .password }}
+UID_rbakos={{ .uid }}
+SAMBA_VOLUME_CONFIG_homelab={{ .share }}
+{{- end }}
+EOF                  
+      }      
+    }
+  }
+}

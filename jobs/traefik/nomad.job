@@ -1,0 +1,92 @@
+job "traefik" {
+  type = "service"
+
+  group "traefik" {
+    count = 1
+
+    network {
+      port "http"  { static = "80" }
+      port "https" { static = "443" }
+      port "admin" { static = "8080" }
+    }
+
+    task "traefik" {
+      driver = "docker"
+
+      config {
+        image = "traefik"
+        network_mode = "host"
+        ports = ["http", "https",]
+				volumes  = [
+          "/mnt/volumes/traefik:/etc/traefik",
+          "/mnt/volumes/traefik/dynamic:/etc/traefik/dynamic",
+        ]
+      }
+
+      service {
+        name = "${NOMAD_JOB_NAME}"
+        port = "http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.api.rule=Host(`${NOMAD_JOB_NAME}.bakos.me`)",
+          "traefik.http.routers.api.entrypoints=websecure",					
+          "traefik.http.routers.api.service=api@internal",
+          "traefik.http.services.dummy.loadbalancer.server.port=9000",
+          "traefik.http.routers.api.middlewares=forward-auth",
+        ]
+
+        check {
+          type     = "tcp"
+          port     = "http"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }      
+
+      resources {
+        cpu    = 500
+        memory = 512
+      }
+
+      template {
+        env = true
+        destination = "secrets/file.env"
+        data = <<EOF
+{{- with nomadVar "nomad/jobs/traefik" }}
+CF_API_EMAIL={{ .cf_api_email }}
+CF_API_KEY={{ .cf_api_key }}
+{{- end }}
+EOF          
+      }    
+		}
+
+    task "keepalived" {
+      driver = "docker"
+            
+	    config {
+          image        = "visibilityspots/keepalived:2.2.7"
+          network_mode = "host"
+          privileged   = true
+          cap_add      = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]
+      }		
+      
+      resources {
+        cpu    = 10
+        memory = 12
+      }
+
+      template {
+        env = true
+        destination = "local/env"        
+        data = <<EOF
+{{- with nomadVar "nomad/jobs/traefik" }}
+KEEPALIVED_VIRTUAL_IPS={{ .keepalived_virtual_ips }}
+KEEPALIVED_ROUTER_ID={{ .keepalived_router_id }}
+KEEPALIVED_STATE={{ .keepalived_state }}
+KEEPALIVED_INTERFACE={{ .keepalived_interface }}
+{{- end }}
+EOF          
+      }    
+    }
+	}
+}		

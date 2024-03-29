@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+export NOMAD_ADDR=''
+export NOMAD_VAR_tld=''
+export NOMAD_VAR_auth_host=''
+export NOMAD_VAR_volumes_dir=''
+export NOMAD_VAR_downloads_dir=''
+export NOMAD_VAR_music_dir=''
+export NOMAD_VAR_movies_dir=''
+export NOMAD_VAR_tv_dir=''
+export NOMAD_VAR_media_dir=''

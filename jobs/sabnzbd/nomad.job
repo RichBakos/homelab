@@ -1,0 +1,62 @@
+job "sabnzbd" {
+  type = "service"
+
+  group "sabnzbd" {
+    count = 1 
+    
+    network {
+      port "http" { static = "8080" }
+    }
+
+    task "sabnzbd" {
+      driver = "docker"
+      
+      config {
+        image = "linuxserver/sabnzbd"
+        ports = ["http"]
+        volumes = [
+          "${var.volumes}/sabnzbd:/config",
+          "${var.downloads_dir}:/downloads",
+          "${var.media_dir}:/media",  
+
+        ]
+      }
+  
+      service {
+        port = "http"
+        name = "${NOMAD_JOB_NAME}"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+        ]
+
+        check {
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
+      resources {
+        cpu    = 100
+        memory = 4096
+      }
+
+      template {
+        data = <<EOF
+{{- with nomadVar "nomad/jobs" }}
+PUID={{ .puid }}
+PGID={{ .pgid }}
+TZ={{ .tz }}
+{{- end }}
+EOF          
+        env = true
+        destination = "local/env"
+      }    
+    }
+  }
+}

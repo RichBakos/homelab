@@ -1,0 +1,86 @@
+job "coredns" {
+  type     = "service"
+
+  group "coredns" {
+    count = 1 
+
+    network {
+      port "dns" { static = "53" }
+    }
+
+    task "coredns" {
+      driver = "docker"
+
+      config {
+        image 			 = "coredns/coredns"
+        network_mode = "host"
+        ports 			 = ["dns"]
+        args 				 = ["-conf", "/local/coredns/corefile"]
+      }
+
+      service {
+        name = "coredns"
+        port = "dns"
+
+        check {
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
+      resources {
+        cpu    = 200
+        memory = 256
+      }
+
+      template {
+        change_mode = "signal"
+        change_signal = "SIGHUP"
+        destination = "local/coredns/corefile"
+      	data = <<EOF
+          .:53 {
+            log
+            errors
+            forward . 172.16.30.1          
+          }
+
+          consul.:53 {
+            log
+            errors
+            forward . 127.0.0.1:8600
+          }
+        EOF
+      }
+    }
+
+    task "keepalived" {
+      driver = "docker"
+
+			config {
+        image        = "visibilityspots/keepalived:2.2.7"
+        network_mode = "host"
+        privileged   = true
+        cap_add      = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]
+      }
+      
+      resources {
+        cpu    = 10
+        memory = 12
+      }
+
+      template {
+        destination = "local/env"
+        env = true				
+        data = <<EOF
+{{- with nomadVar "nomad/jobs/coredns" }}
+KEEPALIVED_INTERFACE={{ .keepalived_interface }}
+KEEPALIVED_ROUTER_ID={{ .keepalived_router_id }}
+KEEPALIVED_VIRTUAL_IPS={{ .keepalived_virtual_ips }}
+KEEPALIVED_STATE={{ .keepalived_state }}
+{{- end }}
+EOF
+      }
+    }
+  }
+}

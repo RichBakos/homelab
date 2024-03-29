@@ -1,0 +1,61 @@
+job "sonarr" {
+  type = "service"
+
+  group "sonarr" {
+    count = 1
+
+    network {
+      port "http" { static = "8989" }
+    }
+
+    task "sonarr" {
+      driver = "docker"
+
+      config {
+        image = "linuxserver/sonarr"
+        network_mode = "host"				
+        ports = ["http"]
+        volumes = [
+          "${var.volumes}/sonarr:/config",
+          "${var.downloads_dir}:/downloads",
+          "${var.tv_dir}:/media/TV",
+        ]
+      }
+
+      service {
+        name = "${NOMAD_JOB_NAME}"
+        port = "http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+        ]
+
+        check {
+          type     = "tcp"
+          interval = "60s"
+          timeout  = "20s"
+        }
+      }		      
+
+      resources {
+        cpu    = 1000
+        memory = 1024
+      }
+
+      template {
+        env = true
+        destination = "local/env"        
+        data = <<EOF
+{{- with nomadVar "nomad/jobs" }}
+PUID={{ .puid }}
+PGID={{ .pgid }}
+TZ={{ .tz }}
+{{- end }}
+EOF                  
+      }      
+    }
+  }
+}

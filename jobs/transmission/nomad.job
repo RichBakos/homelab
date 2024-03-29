@@ -1,0 +1,66 @@
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "tld" { type = string }
+
+job "transmission" {
+  type = "service"
+
+  group "transmission" {
+    count = 1
+
+    network {
+      port "http" { static = 9091 }
+    }
+
+    task "transmission" {
+      driver = "docker"
+			
+      config {
+        image = "linuxserver/transmission"
+        network_mode = "host"
+        ports = ["http"]
+        volumes = [
+          "${var.volumes}/transmission:/data/transmission-home/",
+          "${var.downloads_dir}:/downloads",
+          "${var.downloads_dir}/incomplete:/incomplete",
+          "${var.downloads_dir}/transmission:/data/watch",
+        ]
+      }
+
+      service {
+        port = "http"
+        name = "${NOMAD_JOB_NAME}"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+        ]
+    
+        check {
+          type     = "tcp"
+          interval = "60s"
+          timeout  = "20s"
+        }
+      }	
+
+      resources {
+        cpu    = 256
+        memory = 256
+      }
+
+      template {
+        env = true
+        destination = "local/env"
+        data = <<EOF
+{{- with nomadVar "nomad/jobs" }}
+PUID={{ .puid }}
+PGID={{ .pgid }}
+TZ={{ .tz }}
+{{- end }}
+EOF               
+      }      
+    }
+  }
+}

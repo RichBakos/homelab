@@ -1,0 +1,65 @@
+job "plex" {
+  type = "service"
+
+
+  group "plex" {
+    count = 1
+
+    network {
+      port "http" { static = 32400 }
+    }
+
+    task "plex" {
+      driver = "docker"
+			
+      config {
+        image        = "plexinc/pms-docker"
+        network_mode = "host"
+        ports        = ["http"]
+        volumes 		 = [
+          "${var.volumes}/plex:/config",
+          "${var.media_dir}:/data",
+          "/tmp:/transcode",
+        ]
+      }
+
+      service {
+        port = "http"
+        name = "${NOMAD_JOB_NAME}"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+        ]
+
+        check {
+          type     = "tcp"
+          interval = "60s"
+          timeout  = "20s"
+        }
+      }      
+
+      resources {
+        cpu    = 2000
+        memory = 2048
+      }
+
+      template {
+        data = <<EOF
+{{- with nomadVar "nomad/jobs" }}
+PUID={{ .puid }}
+PGID={{ .pgid }}
+TZ={{ .tz }}
+{{- end }}
+{{- with nomadVar "nomad/jobs/plex" }}
+PLEX_CLAIM={{ .plex_claim }}
+{{- end }}
+EOF
+        env = true
+        destination = "local/env"
+      }      
+    }
+  }
+}

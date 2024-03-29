@@ -1,0 +1,33 @@
+job "mongo" {
+  type = "service"
+
+  group "mongo" {
+    network {
+      port "db" { static = "27017" }
+    }
+
+    task "mongo" {
+      driver = "docker"
+
+      config {
+        image = "docker.io/mongo:4.4.1"
+        network_mode = "host"			
+				ports = ["db"]	
+				volumes = [
+					"/mnt/volumes/mongo/data:/data/db",
+          "/mnt/volumes/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
+        ]
+      }
+
+      service {
+        port = "db"
+        name = "${NOMAD_JOB_NAME}"
+      }		
+
+      resources {
+        cpu    = 500
+        memory = 512
+      }
+    }
+  }
+}

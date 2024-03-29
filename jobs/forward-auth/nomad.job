@@ -1,0 +1,63 @@
+job "forward-auth" {
+  type = "service"
+
+  group "forward-auth" {
+    count = 1 
+
+    network {
+      port "http" { static = "4181" }
+    }
+
+    task "forward-auth" {
+      driver = "docker"
+
+      config {
+        image = "thomseddon/traefik-forward-auth:2.2.0"
+        ports = ["http"]
+	      network_mode = "host"
+      }
+
+      service {
+        port = "http"
+        name = "${NOMAD_JOB_NAME}"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.auth.rule=Host(`${var.auth_host}`)",
+          "traefik.http.routers.auth.entrypoints=websecure",
+          "traefik.http.middlewares.forward-auth.forwardAuth.address=http://forward-auth.service.consul:4181/",
+          "traefik.http.middlewares.forward-auth.forwardAuth.trustForwardHeader=true",
+          "traefik.http.middlewares.forward-auth.forwardAuth.authResponseHeaders=X-Forwarded-User",
+          "traefik.http.routers.auth.middlewares=forward-auth"
+        ]
+        
+        check {
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }     
+
+      resources {
+        cpu    = 200
+        memory = 256
+      }
+
+      template {
+        data = <<EOF
+{{- with nomadVar "nomad/jobs/forward-auth" }}
+PROVIDERS_GOOGLE_CLIENT_ID={{ .providers_google_client_id }}
+PROVIDERS_GOOGLE_CLIENT_SECRET={{ .providers_google_client_secret }}
+SECRET={{ .secret }}
+AUTH_HOST={{ .auth_host }}
+COOKIE_DOMAIN={{ .cookie_domain }}
+WHITELIST={{ .whitelist }}
+LOG_LEVEL={{ .log_level }}
+INSECURE_COOKIE={{ .insecure_cookie }}
+{{- end }}
+EOF          
+        env = true
+        destination = "local/env"
+      }      
+    }      
+  }
+}
