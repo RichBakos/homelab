@@ -1,3 +1,5 @@
+variable "tld" { type = string }
+
 job "hass" {
   type = "service"
 

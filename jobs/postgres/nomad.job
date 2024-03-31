@@ -26,7 +26,7 @@ job "postgres" {
         image = "postgres"
         ports = [ "db" ]
         volumes = [
-          "/mnt/volumes/postgres:/opt/postgres",
+          "${var.volumes}/postgres:/opt/postgres",
         ]
       }
       
@@ -36,6 +36,8 @@ job "postgres" {
       }     
 
       template {
+        env = true
+        destination = "secrets/file.env"        
         data = <<EOF
 {{- with nomadVar "nomad/jobs/postgres" }}
 POSTGRES_DB={{ .postgres_db }}
@@ -44,8 +46,6 @@ POSTGRES_PASSWORD={{ .postgres_password }}
 PGDATA={{ .pgdata }}
 {{- end }}
 EOF                  
-        env = true
-        destination = "secrets/file.env"
       }       
     }
   }

@@ -1,3 +1,5 @@
+variable "volumes" { type = string }
+
 job "mongo" {
   type = "service"
 
@@ -14,8 +16,8 @@ job "mongo" {
         network_mode = "host"			
 				ports = ["db"]	
 				volumes = [
-					"/mnt/volumes/mongo/data:/data/db",
-          "/mnt/volumes/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
+					"${var.volumes}/mongo/data:/data/db",
+          "${var.volumes}/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
         ]
       }
 

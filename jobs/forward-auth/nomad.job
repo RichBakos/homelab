@@ -1,3 +1,5 @@
+variable "auth_host" { type = string }
+
 job "forward-auth" {
   type = "service"
 
@@ -43,6 +45,8 @@ job "forward-auth" {
       }
 
       template {
+        env = true
+        destination = "secrets/file.env"        
         data = <<EOF
 {{- with nomadVar "nomad/jobs/forward-auth" }}
 PROVIDERS_GOOGLE_CLIENT_ID={{ .providers_google_client_id }}
@@ -55,8 +59,6 @@ LOG_LEVEL={{ .log_level }}
 INSECURE_COOKIE={{ .insecure_cookie }}
 {{- end }}
 EOF          
-        env = true
-        destination = "local/env"
       }      
     }      
   }

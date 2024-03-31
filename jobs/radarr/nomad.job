@@ -1,3 +1,8 @@
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "movies_dir" { type = string }
+variable "tld" { type = string }
+
 job "radarr" {
   type        = "service"
 
@@ -46,16 +51,15 @@ job "radarr" {
       }
 
       template {
+        env = true
+        destination = "local/env"        
         data = <<EOF
 {{- with nomadVar "nomad/jobs" }}
 PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-EOF          
-        
-        env = true
-        destination = "local/env"
+EOF            
       }      
     }
   }

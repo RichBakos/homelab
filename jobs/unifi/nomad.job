@@ -1,3 +1,6 @@
+variable "volumes" { type = string }
+variable "tld" { type = string }
+
 job "unifi" {
   type = "service"
 
@@ -14,9 +17,9 @@ job "unifi" {
         network_mode = "host"			
 				ports = ["http"]	
 				volumes = [
-					"/mnt/volumes/unifi:/config",
-				  "/mnt/volumes/unifi/data/db:/data/db",
-          "/mnt/volumes/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
+					"${var.volumes}/unifi:/config",
+				  "${var.volumes}/unifi/data/db:/data/db",
+          "${var.volumes}/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
         ]
       }
 
@@ -25,7 +28,7 @@ job "unifi" {
         port = "http"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.bakos.me`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
           "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
           "traefik.http.services.${NOMAD_JOB_NAME}.loadbalancer.server.scheme=https",				
@@ -39,8 +42,8 @@ job "unifi" {
       }
 
       template {
-        destination = "local/env"
-        env = true
+        env = true        
+        destination = "secrets/file.env"
         data = <<EOF
 {{- with nomadVar "nomad/jobs" }}
 PUID={{ .puid }}

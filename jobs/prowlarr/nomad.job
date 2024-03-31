@@ -1,3 +1,7 @@
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "tld" { type = string }
+
 job "prowlarr" {
   datacenters = ["dc1"]
 
@@ -18,7 +22,6 @@ job "prowlarr" {
         volumes = [
           "${var.volumes}/prowlarr:/config",
           "${var.downloads_dir}:/downloads",
-          "${var.movies_dir}:/media/movies",
         ]
       }
 
@@ -46,6 +49,8 @@ job "prowlarr" {
       }
 
       template {
+        env = true
+        destination = "local/env"        
         data = <<EOF
 {{- with nomadVar "nomad/jobs" }}
 PUID={{ .puid }}
@@ -53,8 +58,6 @@ PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
 EOF           
-        env = true
-        destination = "local/env"
       }      
     }
   }

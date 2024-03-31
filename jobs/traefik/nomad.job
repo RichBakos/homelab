@@ -1,3 +1,6 @@
+variable "volumes" { type = string }
+variable "tld" { type = string }
+
 job "traefik" {
   type = "service"
 
@@ -28,7 +31,7 @@ job "traefik" {
         port = "http"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.api.rule=Host(`${NOMAD_JOB_NAME}.bakos.me`)",
+          "traefik.http.routers.api.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.api.entrypoints=websecure",					
           "traefik.http.routers.api.service=api@internal",
           "traefik.http.services.dummy.loadbalancer.server.port=9000",
