@@ -4,7 +4,7 @@ job "postgres" {
   group "db" {
 
     network {
-      port  "db"  { static = "25432" }
+      port  "db"  { static = "5432" }
     }
 
     service {
