@@ -2,3 +2,4 @@
 .envrc
 jobvars.hcl
 globalvars.hcl
+.vscode/*

@@ -1,3 +1,5 @@
+variable "volumes" { type = string }
+
 job "postgres" {
   type = "service"
 

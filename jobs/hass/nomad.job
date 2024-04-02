@@ -1,3 +1,4 @@
+variable "volumes" { type = string }
 variable "tld" { type = string }
 
 job "hass" {
