@@ -64,3 +64,8 @@ EOF
     }
   }
 }
+
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "tv_dir" { type = string }
+variable "tld" { type = string }
