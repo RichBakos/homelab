@@ -1,4 +1,4 @@
-variable "volumes" { type = string }
+// variable "volumes" { type = string }
 
 job "mongo" {
   type = "service"

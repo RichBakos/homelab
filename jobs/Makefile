@@ -7,17 +7,17 @@ help:##............Show help
 	@echo ""
 
 .PHONY: deploy-global-vars
-deploy-global-vars:##........Deploy specific job from sub folder
+deploy-global-vars:##........Deploy global variables
 	find . -type f -name globalvars.hcl -exec echo nomad var put -force @{} \;
 
 
 .PHONY: deploy-%
-deploy-%:##........Deploy specific job from sub folder
+deploy-%:##........Deploy a specific jobs and its variables
 	[ -f $*/jobvars.hcl ] && nomad var put -force @$*/jobvars.hcl || echo ==> no $* variables
 	nomad job run $*/nomad.job
 
 .PHONY: deploy-all
-deploy-all:##........Deploy specific job from sub folder
+deploy-all:##........Deploy all jobs in directory tree
 	find . -type f -name globalvars.hcl -exec echo nomad var put -force @{} \;
 	find . -type f -name jobvars.hcl | sed -e 's,^\./,,' > vars.txt
 	cat vars.txt | while read line; do nomad var put -force "@$line"; done;
