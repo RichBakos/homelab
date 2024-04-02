@@ -12,7 +12,7 @@ job "mongo" {
       driver = "docker"
 
       config {
-        image = "docker.io/mongo:7.0.1"
+        image = "docker.io/mongo:6.0.14"
         network_mode = "host"			
 				ports = ["db"]	
 				volumes = [
@@ -27,8 +27,8 @@ job "mongo" {
       }		
 
       resources {
-        cpu    = 500
-        memory = 512
+        cpu    = 1000
+        memory = 1024
       }
     }
   }

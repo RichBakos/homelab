@@ -6,8 +6,8 @@ help:##............Show help
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | sed 's/^/    /'
 	@echo ""
 
-.PHONY: deploy-global-vars%
-deploy-global-vars%:##........Deploy specific job from sub folder
+.PHONY: deploy-global-vars
+deploy-global-vars:##........Deploy specific job from sub folder
 	find . -type f -name globalvars.hcl -exec echo nomad var put -force @{} \;
 
 
