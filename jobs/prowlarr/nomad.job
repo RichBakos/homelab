@@ -21,7 +21,6 @@ job "prowlarr" {
         ports 	= ["http"]
         volumes = [
           "${var.volumes}/prowlarr:/config",
-          "${var.downloads_dir}:/downloads",
         ]
       }
 

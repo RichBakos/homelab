@@ -28,7 +28,7 @@ job "postgres" {
         image = "postgres"
         ports = [ "db" ]
         volumes = [
-          "${var.volumes}/postgres:/opt/postgres",
+          "${var.volumes}/postgres:/var/lib/pgsql/data",
         ]
       }
       

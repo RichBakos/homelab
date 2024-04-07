@@ -23,7 +23,6 @@ job "sabnzbd" {
           "${var.volumes}/sabnzbd:/config",
           "${var.downloads_dir}:/downloads",
           "${var.media_dir}:/media",  
-
         ]
       }
   

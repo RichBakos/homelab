@@ -7,7 +7,7 @@ Before=remote-fs.target docker.service nomad.service
 What=172.16.20.202:/volumes
 here=/mnt/volumes
 ype=glusterfs
-Options=defaults,_netdev,backupvolfile-server=172.16.20.203
+Options=defaults,_netdev,noauto,x-systemd.automount,backupvolfile-server=172.16.20.203
 
 [Install]
 WantedBy=multi-user.target
