@@ -1,11 +1,10 @@
-path = "nomad/jobs/forward-auth"
+path = "nomad/jobs/cannery"
 items {
-	auth_host=
-	cookie_domain=
-	insecure_cookie=
-	log_level=
-	providers_google_client_id=
-	providers_google_client_secret=
-	secret=
-	whitelist=
+  host=
+  databse_url=
+  secret_key_base=
+  smtp_host=
+  smtp_port=
+  smtp_user=
+  smtp_password=
 }	

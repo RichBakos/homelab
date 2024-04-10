@@ -87,6 +87,8 @@ KEEPALIVED_VIRTUAL_IPS={{ .keepalived_virtual_ips }}
 KEEPALIVED_ROUTER_ID={{ .keepalived_router_id }}
 KEEPALIVED_STATE={{ .keepalived_state }}
 KEEPALIVED_INTERFACE={{ .keepalived_interface }}
+KEEPALIVED_VIRTUAL_ROUTES={{ .keepalived_virtual_routes }}
+KEEPALIVED_UNICAST_PEERS={{ .keepalived_unicast_peers }}
 {{- end }}
 EOF          
       }    

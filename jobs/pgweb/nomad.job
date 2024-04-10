@@ -1,7 +1,7 @@
 variable "tld" { type = string }
 
 job "pgweb" {
-  type        = "service"
+  type = "service"
 
   group "pgweb" {
     count = 1
@@ -22,8 +22,8 @@ job "pgweb" {
       }
 
       service {
+        name = "${NOMAD_JOB_NAME}"        
         port = "http"
-        name = "${NOMAD_JOB_NAME}"
         tags = [
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",

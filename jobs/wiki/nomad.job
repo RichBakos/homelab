@@ -1,30 +1,26 @@
 variable "volumes" { type = string }
-variable "downloads_dir" { type = string }
 variable "tld" { type = string }
 
-job "transmission" {
+job "wiki" {
   type = "service"
 
-  group "transmission" {
-    count = 1
+  group "wiki" {
 
     network {
-      port "http" { static = 9091 }
+      port "http" { static = 3000 }
     }
 
-    task "transmission" {
+    task "wiki" {
       driver = "docker"
 			
       config {
-        image = "linuxserver/transmission"
+        image = "linuxserver/wikijs"
         network_mode = "host"
         ports = ["http"]
         volumes = [
-          "${var.volumes}/transmission:/config",
-          "${var.downloads_dir}:/downloads",
-          "${var.downloads_dir}/incomplete:/incomplete",
-          "${var.downloads_dir}/transmission:/data/watch",
-        ]
+          "${var.volumes}/wiki:/config",
+					"${var.volumes}/wiki/data:/data",
+				]	
       }
 
       service {
