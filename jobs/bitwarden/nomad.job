@@ -1,11 +1,15 @@
-variable "volumes" { type = string }
-variable "tld" { type = string }
+variable "volumes" { 
+  type = string 
+}
+
+variable "tld" { 
+  type = string 
+}
 
 job "bitwarden" {
-  type        = "service"
+  type = "service"
 
   group "bitwarden" {
-    count = 1
 
     network {
       port "http" { static = "8182" }
@@ -19,7 +23,7 @@ job "bitwarden" {
         network_mode = "host"				
         ports 	= ["http"]
         volumes = [
-          "${var.volumes}/bitwarden:/configertc/bitwarden",
+          "${var.volumes}/bitwarden:/etc/bitwarden",
         ]
       }
 
@@ -50,7 +54,7 @@ job "bitwarden" {
         env = true
         destination = "secrets/file.env"        
         data = <<EOF
-{{- with nomadVar "nomad/jobs" }}
+        {{- with nomadVar "nomad/jobs" }}
 BW_DOMAIN={{ .bw_doamin }}
 BW_DB_PROVIDER={{ .bw_db_provider }}
 BW_DB_FILE={{ .bw_db_file }}
@@ -63,8 +67,8 @@ BW_PORT_HTTPS={{ .bw_port_https }}
 PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
-{{- end }}
-EOF            
+        {{- end }}
+        EOF            
       }      
     }
   }
