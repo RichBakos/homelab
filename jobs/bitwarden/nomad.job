@@ -54,8 +54,13 @@ job "bitwarden" {
         destination = "secrets/file.env"        
         data = <<EOF
 <<<<<<< HEAD
+<<<<<<< HEAD
         {{- with nomadVar "nomad/jobs" }}
 BW_DOMAIN={{ .bw_doamin }}
+=======
+{{- with nomadVar "nomad/jobs" }}
+BW_DOMAIN={{ .bw_domain }}
+>>>>>>> 7a63c7b (Cleanup jobs, vars. Added telegraf, prometheus and loki)
 =======
 {{- with nomadVar "nomad/jobs" }}
 BW_DOMAIN={{ .bw_domain }}
@@ -66,10 +71,14 @@ BW_INSTALLATION_KEY={{ .bw_installation_key }}
 BW_PORT_HTTP={{ .bw_port_http }}
 BW_PORT_HTTPS={{ .bw_port_https }}
 <<<<<<< HEAD
+<<<<<<< HEAD
 PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
         {{- end }}
+=======
+{{- end }}
+>>>>>>> 7a63c7b (Cleanup jobs, vars. Added telegraf, prometheus and loki)
 =======
 {{- end }}
 >>>>>>> 7a63c7b (Cleanup jobs, vars. Added telegraf, prometheus and loki)

@@ -1,0 +1,66 @@
+variable "volumes" { 
+  type = string 
+}
+
+variable "tld" { 
+  type = string 
+}
+
+job "wikijs" {
+  type = "service"
+
+  group "wikijs" {
+
+    network {
+      port "http" { static = 3000 }
+    }
+
+    task "wikijs" {
+      driver = "docker"
+			
+      config {
+        image = "linuxserver/wikijs"
+        network_mode = "host"
+        ports = ["http"]
+        volumes = [
+          "${var.volumes}/wikijs:/config",
+					"${var.volumes}/wikijs/data:/data",
+				]	
+      }
+
+      service {
+        port = "http"
+        name = "${NOMAD_JOB_NAME}"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
+        ]
+    
+        check {
+          type     = "tcp"
+          interval = "60s"
+          timeout  = "20s"
+        }
+      }	
+
+      resources {
+        cpu    = 256
+        memory = 256
+      }
+
+      template {
+        env = true
+        destination = "local/env"
+        data = <<EOF
+{{- with nomadVar "nomad/jobs" }}
+PUID={{ .puid }}
+PGID={{ .pgid }}
+TZ={{ .tz }}
+{{- end }}
+        EOF               
+      }      
+    }
+  }
+}
