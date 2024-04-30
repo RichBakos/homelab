@@ -1,6 +1,14 @@
-variable "volumes" { type = string }
-variable "downloads_dir" { type = string }
-variable "tld" { type = string }
+variable "volumes" { 
+  type = string 
+}
+
+variable "downloads_dir" { 
+  type = string 
+}
+
+variable "tld" { 
+  type = string 
+}
 
 job "prowlarr" {
   datacenters = ["dc1"]
@@ -31,8 +39,7 @@ job "prowlarr" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
 
         check {
@@ -56,7 +63,7 @@ PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-EOF           
+        EOF           
       }      
     }
   }

@@ -4,7 +4,6 @@ datacenter = "dc1"
 region = "home"
 log_level = "WARN"
 
-
 client {
   enabled = true
 
@@ -24,3 +23,4 @@ consul {
   server_auto_join = true
   client_auto_join = true
 }
+

@@ -2,7 +2,8 @@ variable "volumes" { type = string }
 variable "tld" { type = string }
 
 job "traefik" {
-  type = "service"
+  type = "system"
+  priority = 75
 
   group "traefik" {
     count = 1
@@ -21,8 +22,8 @@ job "traefik" {
         network_mode = "host"
         ports = ["http", "https",]
 				volumes  = [
-          "/mnt/volumes/traefik:/etc/traefik",
-          "/mnt/volumes/traefik/dynamic:/etc/traefik/dynamic",
+          "${var.volumes}/traefik:/etc/traefik",
+          "${var.volumes}/traefik/dynamic:/etc/traefik/dynamic",
         ]
       }
 
@@ -35,7 +36,7 @@ job "traefik" {
           "traefik.http.routers.api.entrypoints=websecure",					
           "traefik.http.routers.api.service=api@internal",
           "traefik.http.services.dummy.loadbalancer.server.port=9000",
-          "traefik.http.routers.api.middlewares=forward-auth",
+          "traefik.http.routers.api.middlewares=auth",
         ]
 
         check {
@@ -59,39 +60,8 @@ job "traefik" {
 CF_API_EMAIL={{ .cf_api_email }}
 CF_API_KEY={{ .cf_api_key }}
 {{- end }}
-EOF          
+        EOF          
       }    
 		}
-
-    task "keepalived" {
-      driver = "docker"
-            
-	    config {
-          image        = "visibilityspots/keepalived:2.2.7"
-          network_mode = "host"
-          privileged   = true
-          cap_add      = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]
-      }		
-      
-      resources {
-        cpu    = 10
-        memory = 12
-      }
-
-      template {
-        env = true
-        destination = "local/env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs/traefik" }}
-KEEPALIVED_VIRTUAL_IPS={{ .keepalived_virtual_ips }}
-KEEPALIVED_ROUTER_ID={{ .keepalived_router_id }}
-KEEPALIVED_STATE={{ .keepalived_state }}
-KEEPALIVED_INTERFACE={{ .keepalived_interface }}
-KEEPALIVED_VIRTUAL_ROUTES={{ .keepalived_virtual_routes }}
-KEEPALIVED_UNICAST_PEERS={{ .keepalived_unicast_peers }}
-{{- end }}
-EOF          
-      }    
-    }
 	}
 }		

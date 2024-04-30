@@ -1,8 +1,11 @@
+variable "tld" {
+  type = "string"
+}
+
 job "cannery" {
   type = "service"
 
   group "cannery" {
-    count = 1
 
     network {
       port "http" { static = "4000" }
@@ -15,11 +18,20 @@ job "cannery" {
         image = "shibaobun/cannery:latest"
         network_mode = "host"				
         ports = ["http"]
+        volumes = [
+          "${var.volumes}/cannery:/config",
+        ]        
       }
 
       service {
         name = "${NOMAD_JOB_NAME}"
         port = "http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+        ]        
 
         check {
           type     = "tcp"
@@ -46,7 +58,7 @@ SMTP_PORT={{ .smtp_port }}
 SMTP_USERNAME={{ .smtp_user }}
 SMTP_PASSWORD={{ .smtp_password }}
 {{- end }}
-EOF                  
+        EOF                  
       }      
     }
   }

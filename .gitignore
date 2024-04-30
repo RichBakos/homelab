@@ -1,3 +1,5 @@
 .envrc
+.bak
+.txt
 jobvars.hcl
 globalvars.hcl

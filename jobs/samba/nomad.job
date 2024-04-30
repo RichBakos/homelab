@@ -43,9 +43,9 @@ job "samba" {
 {{- with nomadVar "nomad/jobs/samba" }}
 ACCOUNT_rbakos={{ .password }}
 UID_rbakos={{ .uid }}
-SAMBA_VOLUME_CONFIG_homelab={{ .share }}
+SAMBA_volumes_CONFIG_homelab={{ .share }}
 {{- end }}
-EOF                  
+        EOF                  
       }      
     }
   }

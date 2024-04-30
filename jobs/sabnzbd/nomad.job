@@ -1,13 +1,23 @@
-variable "volumes" { type = string }
-variable "downloads_dir" { type = string }
-variable "media_dir" { type = string }
-variable "tld" { type = string }
+variable "volumes" { 
+  type = string 
+}
+
+variable "downloads_dir" { 
+  type = string 
+}
+
+variable "media_dir" { 
+  type = string 
+}
+
+variable "tld" { 
+  type = string 
+}
 
 job "sabnzbd" {
   type = "service"
 
   group "sabnzbd" {
-    count = 1 
     
     network {
       port "http" { static = "8080" }
@@ -33,7 +43,6 @@ job "sabnzbd" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
           "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
         ]
 
@@ -59,7 +68,7 @@ PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-EOF          
+        EOF          
       }    
     }
   }

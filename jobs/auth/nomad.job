@@ -1,16 +1,17 @@
-variable "auth_host" { type = string }
+variable "tld" { 
+  type = string 
+}
 
-job "forward-auth" {
+job "auth" {
   type = "service"
 
-  group "forward-auth" {
-    count = 1 
+  group "auth" {
 
     network {
       port "http" { static = "4181" }
     }
 
-    task "forward-auth" {
+    task "auth" {
       driver = "docker"
 
       config {
@@ -24,12 +25,12 @@ job "forward-auth" {
         name = "${NOMAD_JOB_NAME}"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.auth.rule=Host(`${var.auth_host}`)",
+          "traefik.http.routers.auth.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.auth.entrypoints=websecure",
-          "traefik.http.middlewares.forward-auth.forwardAuth.address=http://forward-auth.service.consul:4181/",
-          "traefik.http.middlewares.forward-auth.forwardAuth.trustForwardHeader=true",
-          "traefik.http.middlewares.forward-auth.forwardAuth.authResponseHeaders=X-Forwarded-User",
-          "traefik.http.routers.auth.middlewares=forward-auth"
+          "traefik.http.middlewares.auth.forwardAuth.address=http://${NOMAD_JOB_NAME}.service.consul:4181/",
+          "traefik.http.middlewares.auth.forwardAuth.trustForwardHeader=true",
+          "traefik.http.middlewares.auth.forwardAuth.authResponseHeaders=X-Forwarded-User",
+          "traefik.http.routers.auth.middlewares=auth"
         ]
         
         check {
@@ -58,7 +59,7 @@ WHITELIST={{ .whitelist }}
 LOG_LEVEL={{ .log_level }}
 INSECURE_COOKIE={{ .insecure_cookie }}
 {{- end }}
-EOF          
+        EOF          
       }      
     }      
   }

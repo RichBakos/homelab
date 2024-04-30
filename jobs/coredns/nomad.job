@@ -1,8 +1,8 @@
 job "coredns" {
   type     = "service"
+  priority = 75
 
   group "coredns" {
-    count = 1 
 
     network {
       port "dns" { static = "53" }
@@ -19,8 +19,9 @@ job "coredns" {
       }
 
       service {
-        name = "coredns"
+        name = "${NOMAD_JOB_NAME}"
         port = "dns"
+        tags = ["coredns","metrics"]
 
         check {
           type     = "tcp"
@@ -39,17 +40,21 @@ job "coredns" {
         change_signal = "SIGHUP"
         destination = "local/coredns/corefile"
       	data = <<EOF
-          .:53 {
-            log
-            errors
-            forward . 172.16.30.1          
-          }
+        {{- with nomadVar "nomad/jobs/coredns" }}        
+  .:53 {	
+    forward . {{ .keepalived_dns_server }}	
+    log
+    errors
+    prometheus {{ env "NOMAD_IP_dns" }}:9153             
+  }
 
-          consul.:53 {
-            log
-            errors
-            forward . 127.0.0.1:8600
-          }
+  consul.:53 {
+    forward . 127.0.0.1:8600
+    log
+    errors
+    prometheus {{ env "NOMAD_IP_dns" }}:9153    
+  }
+        {{- end }}
         EOF
       }
     }
@@ -58,7 +63,7 @@ job "coredns" {
       driver = "docker"
 
 			config {
-        image        = "visibilityspots/keepalived:2.2.7"
+        image        = "osixia/keepalived:2.0.20"
         network_mode = "host"
         privileged   = true
         cap_add      = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]
@@ -73,15 +78,14 @@ job "coredns" {
         destination = "local/env"
         env = true				
         data = <<EOF
-{{- with nomadVar "nomad/jobs/coredns" }}
+        {{- with nomadVar "nomad/jobs/coredns" }}
 KEEPALIVED_INTERFACE={{ .keepalived_interface }}
-KEEPALIVED_ROUTER_ID={{ .keepalived_router_id }}
 KEEPALIVED_VIRTUAL_IPS={{ .keepalived_virtual_ips }}
 KEEPALIVED_STATE={{ .keepalived_state }}
 KEEPALIVED_VIRTUAL_ROUTES={{ .keepalived_virtual_routes }}
 KEEPALIVED_UNICAST_PEERS={{ .keepalived_unicast_peers }}
-{{- end }}
-EOF
+        {{- end }}
+        EOF
       }
     }
   }

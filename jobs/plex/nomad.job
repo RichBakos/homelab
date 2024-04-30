@@ -1,13 +1,19 @@
-variable "volumes" { type = string }
-variable "media_dir" { type = string }
-variable "tld" { type = string }
+variable "volumes" { 
+  type = string 
+}
+
+variable "media_dir" { 
+  type = string 
+}
+
+variable "tld" { 
+  type = string 
+}
 
 job "plex" {
   type = "service"
 
-
   group "plex" {
-    count = 1
 
     network {
       port "http" { static = 32400 }
@@ -34,8 +40,7 @@ job "plex" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
 
         check {
@@ -51,18 +56,18 @@ job "plex" {
       }
 
       template {
+        env = true
+        destination = "local/env"        
         data = <<EOF
-{{- with nomadVar "nomad/jobs" }}
-PUID={{ .puid }}
-PGID={{ .pgid }}
-TZ={{ .tz }}
-{{- end }}
 {{- with nomadVar "nomad/jobs/plex" }}
 PLEX_CLAIM={{ .plex_claim }}
+{{- end }}      
+{{- with nomadVar "nomad/jobs" }}
+PLEX_UID={{ .puid }}
+PLEX_GID={{ .pgid }}
+TZ={{ .tz }}
 {{- end }}
-EOF
-        env = true
-        destination = "local/env"
+        EOF
       }      
     }
   }

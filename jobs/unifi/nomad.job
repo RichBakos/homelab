@@ -1,5 +1,10 @@
-variable "volumes" { type = string }
-variable "tld" { type = string }
+variable "volumes" { 
+  type = string 
+}
+
+variable "tld" { 
+  type = string 
+}
 
 job "unifi" {
   type = "service"
@@ -30,9 +35,8 @@ job "unifi" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
           "traefik.http.services.${NOMAD_JOB_NAME}.loadbalancer.server.scheme=https",				
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth",
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth",
         ]
       }		      
 
@@ -57,7 +61,7 @@ MONGO_HOST={{ .mongo_host }}
 MONGO_PORT={{ .mongo_port }}
 MONGO_DBNAME={{ .mongo_dbname }}
 {{- end }}
-EOF          
+        EOF          
       }
     }
   }
