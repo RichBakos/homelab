@@ -1,8 +1,4 @@
-path = "nomad/jobs/unifi"
+path = "nomad/jobs/wikijs"
 items {
-  mongo_user=
-  mongo_pass=
-  mongo_host=
-  mongo_port=
-  mongo_dbname=
+
 }
