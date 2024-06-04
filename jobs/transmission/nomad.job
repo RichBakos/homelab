@@ -1,20 +1,11 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "downloads_dir" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "tld" { type = string }
 
 job "transmission" {
   type = "service"
 
   group "transmission" {
-    count = 1
 
     network {
       port "http" { static = 9091 }
@@ -31,31 +22,30 @@ job "transmission" {
           "${var.volumes}/transmission:/config",
           "${var.downloads_dir}:/downloads",
           "${var.downloads_dir}/incomplete:/incomplete",
-          "${var.downloads_dir}/transmission:/data/watch",
+          "${var.volumes}/transmission/torrents:/data/watch",
         ]
       }
 
+      resources {
+        cpu    = 500
+        memory = 512
+      }   
+
       service {
+        name = "${NOMAD_JOB_NAME}"        
         port = "http"
-        name = "${NOMAD_JOB_NAME}"
         tags = [
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
           "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-    
+        ]    
         check {
           type     = "tcp"
           interval = "60s"
           timeout  = "20s"
         }
       }	
-
-      resources {
-        cpu    = 200
-        memory = 512
-      }
 
       template {
         env = true
@@ -66,8 +56,8 @@ PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-        EOF               
-      }      
+EOF               
+      }               
     }
   }
 }

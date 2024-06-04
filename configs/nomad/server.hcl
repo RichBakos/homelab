@@ -2,10 +2,11 @@ bind_addr = "0.0.0.0"
 data_dir = "/opt/nomad/"
 datacenter = "dc1"
 region = "home"
-log_level = "WARN"
+log_level = "warn"
 
 server {
   enabled = true
+  authoritative_region = "home"
   bootstrap_expect = 3
   heartbeat_grace = "300s"
   min_heartbeat_ttl = "20s"

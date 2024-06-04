@@ -1,26 +1,14 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "downloads_dir" { 
-  type = string 
-}
-
-variable "media_dir" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "media_dir" { type = string }
+variable "tld" { type = string }
 
 job "sabnzbd" {
   type = "service"
 
-  group "sabnzbd" {
-    
+  group "sabnzbd" {    
     network {
-      port "http" { static = "8080" }
+      port "http" { to = "8080" }
     }
 
     task "sabnzbd" {
@@ -36,6 +24,11 @@ job "sabnzbd" {
         ]
       }
   
+      resources {
+        cpu    = 1000
+        memory = 1024
+      }
+
       service {
         port = "http"
         name = "${NOMAD_JOB_NAME}"
@@ -43,20 +36,14 @@ job "sabnzbd" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
-
         check {
           type     = "http"
           path     = "/"
           interval = "10s"
           timeout  = "2s"
         }
-      }
-
-      resources {
-        cpu    = 100
-        memory = 4096
       }
 
       template {
@@ -68,7 +55,7 @@ PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-        EOF          
+EOF          
       }    
     }
   }

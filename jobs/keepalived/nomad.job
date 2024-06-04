@@ -1,0 +1,30 @@
+job "keepalived" {
+  type     = "system"
+  priority = 100
+
+  group "keepalived" {
+    task "keepalived" {
+      driver = "docker"
+
+			config {
+        image        = "osixia/keepalived:2.0.20"
+        network_mode = "host"
+        cap_add      = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]  
+        volumes = [
+            "local/:/container/environment/01-custom"
+        ]           
+      }
+
+      template {    
+        destination = "local/env.yaml"
+        change_mode = "restart"
+        data = file("keepalived/nomad.hcl")  
+      }
+
+      resources {
+        cpu    = 10
+        memory = 12
+      }
+    }      
+  }
+}

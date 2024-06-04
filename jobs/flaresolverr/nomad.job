@@ -1,0 +1,42 @@
+variable "tld" { type = string }
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+
+job "flaresolverr" {
+  type  = "service"
+
+  group "flaresolverr" {
+    network {
+      port "http" { static = "8191" }
+    }
+    
+		task "flaresolverr" {
+      driver = "docker"
+
+      config {
+        image = "ghcr.io/flaresolverr/flaresolverr:latest"
+        network_mode = "host"
+        volumes = [
+          "${var.volumes}/flaresolverr/config:/config",
+          "${var.volumes}/flaresolverr/torrents:/torrents",
+          "${var.downloads_dir}:/downloads",
+        ]
+      }
+
+      resources {
+        cpu    = 500
+        memory = 512
+      }
+
+      service {
+        port = "http"
+				name = "${NOMAD_JOB_NAME}"     	      				
+        check {
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "2s"
+        }				
+      }
+    }
+  }
+}

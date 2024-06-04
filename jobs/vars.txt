@@ -1,0 +1,9 @@
+unifi/jobvars.hcl
+cannery/jobvars.hcl
+traefik/jobvars.hcl
+bitwarden/jobvars.hcl
+auth/jobvars.hcl
+postgres/jobvars.hcl
+samba/jobvars.hcl
+plex/jobvars.hcl
+coredns/jobvars.hcl

@@ -1,25 +1,12 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "downloads_dir" { 
-  type = string 
-}
-
-variable "tv_dir" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "tv_dir" { type = string }
+variable "tld" { type = string }
 
 job "sonarr" {
   type = "service"
 
   group "sonarr" {
-    count = 1
-
     network {
       port "http" { static = "8989" }
     }
@@ -34,8 +21,13 @@ job "sonarr" {
         volumes = [
           "${var.volumes}/sonarr:/config",
           "${var.downloads_dir}:/downloads",
-          "${var.tv_dir}:/media/TV",
+          "${var.tv_dir}:/media/tv",
         ]
+      }	  
+
+      resources {
+        cpu    = 1000
+        memory = 1024
       }
 
       service {
@@ -48,18 +40,12 @@ job "sonarr" {
           "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
           "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
-
         check {
           type     = "tcp"
           interval = "60s"
           timeout  = "20s"
         }
-      }		      
-
-      resources {
-        cpu    = 1000
-        memory = 1024
-      }
+      }	 
 
       template {
         env = true
@@ -70,8 +56,8 @@ PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-        EOF                  
-      }      
+EOF                  
+      }                     
     }
   }
 }

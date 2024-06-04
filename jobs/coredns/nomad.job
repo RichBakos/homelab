@@ -1,13 +1,12 @@
 job "coredns" {
-  type     = "service"
-  priority = 75
+  type     = "system"
+  priority = 100
 
   group "coredns" {
-
     network {
       port "dns" { static = "53" }
-    }
-
+    }    
+    
     task "coredns" {
       driver = "docker"
 
@@ -18,75 +17,23 @@ job "coredns" {
         args 				 = ["-conf", "/local/coredns/corefile"]
       }
 
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "dns"
-        tags = ["coredns","metrics"]
-
-        check {
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "2s"
-        }
-      }
-
-      resources {
-        cpu    = 200
-        memory = 256
-      }
-
-      template {
+     template {
         change_mode = "signal"
         change_signal = "SIGHUP"
         destination = "local/coredns/corefile"
-      	data = <<EOF
-        {{- with nomadVar "nomad/jobs/coredns" }}        
-  .:53 {	
-    forward . {{ .keepalived_dns_server }}	
-    log
-    errors
-    prometheus {{ env "NOMAD_IP_dns" }}:9153             
-  }
-
-  consul.:53 {
-    forward . 127.0.0.1:8600
-    log
-    errors
-    prometheus {{ env "NOMAD_IP_dns" }}:9153    
-  }
-        {{- end }}
-        EOF
+        data = file("coredns/nomad.hcl")
       }
-    }
 
-    task "keepalived" {
-      driver = "docker"
-
-			config {
-        image        = "osixia/keepalived:2.0.20"
-        network_mode = "host"
-        privileged   = true
-        cap_add      = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]
-      }
-      
       resources {
-        cpu    = 10
-        memory = 12
+        cpu    = 100
+        memory = 128
       }
 
-      template {
-        destination = "local/env"
-        env = true				
-        data = <<EOF
-        {{- with nomadVar "nomad/jobs/coredns" }}
-KEEPALIVED_INTERFACE={{ .keepalived_interface }}
-KEEPALIVED_VIRTUAL_IPS={{ .keepalived_virtual_ips }}
-KEEPALIVED_STATE={{ .keepalived_state }}
-KEEPALIVED_VIRTUAL_ROUTES={{ .keepalived_virtual_routes }}
-KEEPALIVED_UNICAST_PEERS={{ .keepalived_unicast_peers }}
-        {{- end }}
-        EOF
-      }
+      service {
+        name = "${NOMAD_JOB_NAME}"
+        port = "dns"
+        tags = ["coredns"]
+      }  
     }
   }
 }

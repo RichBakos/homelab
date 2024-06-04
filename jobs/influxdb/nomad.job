@@ -1,44 +1,54 @@
 variable "volumes" { type = string }
 variable "tld" { type = string }
 
-job "hass" {
+job "influxdb" {
   type = "service"
 
-  group "hass" {
+  group "influxdb" {
     network {
-      port "http" { static = "8123" }
+      port  "http"  { static = "8086" }
     }
 
-    task "hass" {
+    task "influxdb" {
       driver = "docker"
-			
+      
       config {
-        image = "homeassistant/home-assistant:latest"
-        network_mode = "host"
+        image = "influxdb:alpine"
+        network_mode = "host"        
+        ports = [ "http" ]
         volumes = [
-          "${var.volumes}/hass:/config",
+          "${var.volumes}/influxdb/data:/var/lib/influxdb2",
+          "${var.volumes}/influxdb/config:/etc/influxdb2",
+
         ]
       }
+
+      template {
+        env = true
+        destination = "secrets/file.env"        
+        data = file("influxdb/nomad.hcl")          
+      }         
 
       resources {
         cpu    = 1000
         memory = 1024
-      }
-
+      }  
+      
       service {
-        port = "http"
         name = "${NOMAD_JOB_NAME}"
+        port = "http"
         tags = [
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-        ]        
+        ]         
         check {
           type     = "tcp"
-          interval = "10s"
+          port     = "http"
+          interval = "30s"
           timeout  = "2s"
         }
-      }
+      }             
     }
   }
 }

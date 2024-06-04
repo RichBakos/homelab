@@ -1,20 +1,11 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "media_dir" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "volumes" { type = string }
+variable "media_dir" { type = string }
+variable "tld" { type = string }
 
 job "plex" {
   type = "service"
 
   group "plex" {
-
     network {
       port "http" { static = 32400 }
     }
@@ -33,6 +24,17 @@ job "plex" {
         ]
       }
 
+      template {
+        env = true
+        destination = "local/env"        
+        data = file("plex/nomad.hcl")  
+      }   
+      
+      resources {
+        cpu    = 1500
+        memory = 1536
+      }   
+
       service {
         port = "http"
         name = "${NOMAD_JOB_NAME}"
@@ -42,33 +44,12 @@ job "plex" {
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
           "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
-
         check {
           type     = "tcp"
           interval = "60s"
           timeout  = "20s"
         }
-      }      
-
-      resources {
-        cpu    = 2000
-        memory = 2048
-      }
-
-      template {
-        env = true
-        destination = "local/env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs/plex" }}
-PLEX_CLAIM={{ .plex_claim }}
-{{- end }}      
-{{- with nomadVar "nomad/jobs" }}
-PLEX_UID={{ .puid }}
-PLEX_GID={{ .pgid }}
-TZ={{ .tz }}
-{{- end }}
-        EOF
-      }      
+      }            
     }
   }
 }

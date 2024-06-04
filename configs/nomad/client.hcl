@@ -2,7 +2,7 @@ bind_addr = "0.0.0.0"
 data_dir = "/opt/nomad/"
 datacenter = "dc1"
 region = "home"
-log_level = "WARN"
+log_level = "warn"
 
 client {
   enabled = true
@@ -24,3 +24,16 @@ consul {
   client_auto_join = true
 }
 
+telemetry {
+  collection_interval = "5s"
+  disable_hostname = false
+  prometheus_metrics = true
+  publish_allocation_metrics = true
+  publish_node_metrics = true
+}
+
+plugin "docker" {
+  config {
+    extra_labels = ["job_name", "job_id", "task_group_name", "task_name", "namespace", "node_name", "node_id"]
+  }
+}

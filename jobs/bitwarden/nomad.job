@@ -34,7 +34,7 @@ job "bitwarden" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
 
         check {
@@ -47,43 +47,7 @@ job "bitwarden" {
       resources {
         cpu    = 1000
         memory = 1024
-      }
-
-      template {
-        env = true
-        destination = "secrets/file.env"        
-        data = <<EOF
-<<<<<<< HEAD
-<<<<<<< HEAD
-        {{- with nomadVar "nomad/jobs" }}
-BW_DOMAIN={{ .bw_doamin }}
-=======
-{{- with nomadVar "nomad/jobs" }}
-BW_DOMAIN={{ .bw_domain }}
->>>>>>> 7a63c7b (Cleanup jobs, vars. Added telegraf, prometheus and loki)
-=======
-{{- with nomadVar "nomad/jobs" }}
-BW_DOMAIN={{ .bw_domain }}
->>>>>>> 7a63c7b (Cleanup jobs, vars. Added telegraf, prometheus and loki)
-BW_DB_PROVIDER={{ .bw_db_provider }}
-BW_INSTALLATION_ID={{ .bw_installation_id }}
-BW_INSTALLATION_KEY={{ .bw_installation_key }}
-BW_PORT_HTTP={{ .bw_port_http }}
-BW_PORT_HTTPS={{ .bw_port_https }}
-<<<<<<< HEAD
-<<<<<<< HEAD
-PUID={{ .puid }}
-PGID={{ .pgid }}
-TZ={{ .tz }}
-        {{- end }}
-=======
-{{- end }}
->>>>>>> 7a63c7b (Cleanup jobs, vars. Added telegraf, prometheus and loki)
-=======
-{{- end }}
->>>>>>> 7a63c7b (Cleanup jobs, vars. Added telegraf, prometheus and loki)
-        EOF            
-      }      
+      }   
     }
   }
 }

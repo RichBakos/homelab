@@ -1,21 +1,11 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "downloads_dir" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "tld" { type = string }
 
 job "prowlarr" {
-  datacenters = ["dc1"]
+  type = "service"
 
   group "prowlarr" {
-    count = 1
-
     network {
       port "http" { static = "9696" }
     }	
@@ -32,6 +22,11 @@ job "prowlarr" {
         ]
       }
 
+      resources {
+        cpu    = 500
+        memory = 512
+      }
+
       service {
         name = "${NOMAD_JOB_NAME}"
         port = "http"
@@ -41,18 +36,12 @@ job "prowlarr" {
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
           "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
-
         check {
           type     = "tcp"
           interval = "60s"
           timeout  = "20s"
         }
       }	
-
-      resources {
-        cpu    = 1000
-        memory = 1024
-      }
 
       template {
         env = true
@@ -63,8 +52,8 @@ PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-        EOF           
-      }      
+EOF           
+      }            
     }
   }
 }

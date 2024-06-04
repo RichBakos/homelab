@@ -1,24 +1,12 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "downloads_dir" { 
-  type = string 
-}
-
-variable "movies_dir" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "volumes" { type = string }
+variable "downloads_dir" { type = string }
+variable "movies_dir" { type = string }
+variable "tld" { type = string }
 
 job "radarr" {
-  type        = "service"
+  type  = "service"
 
   group "radarr" {
-
     network {
       port "http" { static = "7878" }
     }
@@ -35,6 +23,11 @@ job "radarr" {
           "${var.downloads_dir}:/downloads",
           "${var.movies_dir}:/media/movies",
         ]
+      }    
+
+      resources {
+        cpu    = 1000
+        memory = 1024
       }
 
       service {
@@ -46,18 +39,12 @@ job "radarr" {
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
           "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
-
         check {
           type     = "tcp"
           interval = "60s"
           timeout  = "20s"
         }
-      }		      
-
-      resources {
-        cpu    = 1000
-        memory = 1024
-      }
+      }		
 
       template {
         env = true
@@ -68,8 +55,8 @@ PUID={{ .puid }}
 PGID={{ .pgid }}
 TZ={{ .tz }}
 {{- end }}
-        EOF            
-      }      
+EOF            
+      }               
     }
   }
 }

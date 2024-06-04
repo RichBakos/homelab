@@ -1,12 +1,9 @@
-variable "tld" { 
-  type = string 
-}
+variable tld {}
 
 job "auth" {
   type = "service"
 
   group "auth" {
-
     network {
       port "http" { static = "4181" }
     }
@@ -20,6 +17,17 @@ job "auth" {
 	      network_mode = "host"
       }
 
+      template {
+        env = true
+        destination = "secrets/file.env"        
+        data = file("auth/nomad.hcl")       
+      }  
+      
+      resources {
+        cpu    = 200
+        memory = 256
+      }   
+
       service {
         port = "http"
         name = "${NOMAD_JOB_NAME}"
@@ -31,36 +39,13 @@ job "auth" {
           "traefik.http.middlewares.auth.forwardAuth.trustForwardHeader=true",
           "traefik.http.middlewares.auth.forwardAuth.authResponseHeaders=X-Forwarded-User",
           "traefik.http.routers.auth.middlewares=auth"
-        ]
-        
+        ]        
         check {
           type     = "tcp"
           interval = "10s"
           timeout  = "2s"
         }
-      }     
-
-      resources {
-        cpu    = 200
-        memory = 256
-      }
-
-      template {
-        env = true
-        destination = "secrets/file.env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs/forward-auth" }}
-PROVIDERS_GOOGLE_CLIENT_ID={{ .providers_google_client_id }}
-PROVIDERS_GOOGLE_CLIENT_SECRET={{ .providers_google_client_secret }}
-SECRET={{ .secret }}
-AUTH_HOST={{ .auth_host }}
-COOKIE_DOMAIN={{ .cookie_domain }}
-WHITELIST={{ .whitelist }}
-LOG_LEVEL={{ .log_level }}
-INSECURE_COOKIE={{ .insecure_cookie }}
-{{- end }}
-        EOF          
-      }      
+      }          
     }      
   }
 }

@@ -1,12 +1,9 @@
-variable "tld" { 
-  type = string 
-}
+variable "tld" { type = string }
 
 job "pgweb" {
   type = "service"
 
   group "pgweb" {
-
     network {
       port "http" { static = 8082 }
     }
@@ -22,6 +19,11 @@ job "pgweb" {
         args         = ["--bind=0.0.0.0", "--listen=8082"]
       }
 
+      resources {
+        cpu = 128
+        memory = 128
+      }
+
       service {
         name = "${NOMAD_JOB_NAME}"        
         port = "http"
@@ -29,7 +31,7 @@ job "pgweb" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
         check {
           type     = "http"
@@ -37,11 +39,6 @@ job "pgweb" {
           interval = "10s"
           timeout  = "2s"
         }
-      }
-
-      resources {
-        cpu = 128
-        memory = 128
       }
     }
   }

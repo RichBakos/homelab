@@ -3,29 +3,32 @@ variable "tld" { type = string }
 
 job "traefik" {
   type = "system"
-  priority = 75
+  priority = 100
 
   group "traefik" {
-    count = 1
-
     network {
       port "http"  { static = "80" }
       port "https" { static = "443" }
       port "admin" { static = "8080" }
     }
-
+      
     task "traefik" {
       driver = "docker"
 
       config {
-        image = "traefik"
+        image = "traefik:2.11.2"
         network_mode = "host"
         ports = ["http", "https",]
 				volumes  = [
           "${var.volumes}/traefik:/etc/traefik",
           "${var.volumes}/traefik/dynamic:/etc/traefik/dynamic",
         ]
-      }
+      }          
+
+      resources {
+        cpu    = 500
+        memory = 512
+      } 
 
       service {
         name = "${NOMAD_JOB_NAME}"
@@ -38,19 +41,13 @@ job "traefik" {
           "traefik.http.services.dummy.loadbalancer.server.port=9000",
           "traefik.http.routers.api.middlewares=auth",
         ]
-
         check {
           type     = "tcp"
           port     = "http"
           interval = "10s"
           timeout  = "2s"
         }
-      }      
-
-      resources {
-        cpu    = 500
-        memory = 512
-      }
+      } 
 
       template {
         env = true
@@ -60,8 +57,8 @@ job "traefik" {
 CF_API_EMAIL={{ .cf_api_email }}
 CF_API_KEY={{ .cf_api_key }}
 {{- end }}
-        EOF          
-      }    
+EOF          
+      }        
 		}
 	}
 }		

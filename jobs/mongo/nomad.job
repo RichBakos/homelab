@@ -1,12 +1,9 @@
-variable "volumes" { 
-  type = string 
-}
+variable "volumes" { type = string }
 
 job "mongo" {
   type = "service"
 
   group "mongo" {
-
     network {
       port "db" { static = "27017" }
     }
@@ -24,15 +21,15 @@ job "mongo" {
         ]
       }
 
-      service {
-        name = "${NOMAD_JOB_NAME}"        
-        port = "db"
-      }		
-
       resources {
         cpu    = 1000
         memory = 1024
       }
+
+      service {
+        name = "${NOMAD_JOB_NAME}"        
+        port = "db"
+      }		
     }
   }
 }

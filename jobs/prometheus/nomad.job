@@ -1,16 +1,10 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "volumes" { type = string }
+variable "tld" { type = string }
 
 job "prometheus" {
   type = "service"
 
   group "prometheus" {
-
     network {
       port "http" { static = "9090" }
     }
@@ -30,6 +24,12 @@ job "prometheus" {
     	    ]
       }
 
+
+     resources {
+        cpu    = 1000
+        memory = 512
+      }		
+
       service {
         name = "${NOMAD_JOB_NAME}"
         port = "http"
@@ -37,9 +37,8 @@ job "prometheus" {
           "traefik.enable=true",
           "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
           "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
+          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
         ]
-
         check {
           type     = "http"
           path     = "/-/healthy"
@@ -47,12 +46,7 @@ job "prometheus" {
           interval = "5s"
           timeout  = "2s"
         }
-      }
-
-     resources {
-        cpu    = 1000
-        memory = 512
-      }			
+      }	
 
       template {
         destination   = "local/prometheus.yml"
@@ -81,7 +75,7 @@ scrape_configs:
     static_configs:
       - targets: ["coredns.service.consul:9153"]
 
-EOF
+        EOF
       }
 		}
   }
