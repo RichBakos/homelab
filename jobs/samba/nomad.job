@@ -18,6 +18,12 @@ job "samba" {
         ]
       } 
 
+      template {
+        env = true
+        destination = "secrets/file.env"        
+        data = file("samba/template.hcl")              
+      } 
+      
       resources {
         cpu    = 200
         memory = 256
@@ -31,19 +37,7 @@ job "samba" {
           interval = "60s"
           timeout  = "20s"
         }
-      }
-
-      template {
-        env = true
-        destination = "secrets/file.env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs/samba" }}
-ACCOUNT_rbakos={{ .password }}
-UID_rbakos={{ .uid }}
-SAMBA_volumes_CONFIG_homelab={{ .share }}
-{{- end }}
-EOF                  
-      }       		      
+      }      		      
     }
   }
 }
