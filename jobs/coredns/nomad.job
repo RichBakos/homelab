@@ -21,7 +21,7 @@ job "coredns" {
         change_mode = "signal"
         change_signal = "SIGHUP"
         destination = "local/coredns/corefile"
-        data = file("coredns/nomad.hcl")
+        data = file("coredns/template.hcl")
       }
 
       resources {

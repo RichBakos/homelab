@@ -22,6 +22,12 @@ job "prowlarr" {
         ]
       }
 
+      template {
+        env = true
+        destination = "local/env"        
+        data = file("prowlarr/template.hcl")        
+      }  
+
       resources {
         cpu    = 500
         memory = 512
@@ -41,19 +47,7 @@ job "prowlarr" {
           interval = "60s"
           timeout  = "20s"
         }
-      }	
-
-      template {
-        env = true
-        destination = "local/env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs" }}
-PUID={{ .puid }}
-PGID={{ .pgid }}
-TZ={{ .tz }}
-{{- end }}
-EOF           
-      }            
+      }	          
     }
   }
 }

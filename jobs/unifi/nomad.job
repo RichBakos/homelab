@@ -28,6 +28,12 @@ job "unifi" {
         ]
       }
  
+       template {
+        env = true        
+        destination = "secrets/file.env"
+        data = file("unifi/tamplate.hcl")     
+      } 
+
       resources {
         cpu    = 1000
         memory = 1536
@@ -48,26 +54,7 @@ job "unifi" {
           interval = "60s"
           timeout  = "20s"
         }
-      }		      
-
-      template {
-        env = true        
-        destination = "secrets/file.env"
-        data = <<EOF
-{{- with nomadVar "nomad/jobs" }}
-  PUID={{ .puid }}
-  PGID={{ .pgid }}
-  TZ={{ .tz }}
-{{- end }}
-{{- with nomadVar "nomad/jobs/unifi" }}
-  MONGO_USER={{ .mongo_user }}
-  MONGO_PASS={{ .mongo_pass }}
-  MONGO_HOST={{ .mongo_host }}
-  MONGO_PORT={{ .mongo_port }}
-  MONGO_DBNAME={{ .mongo_dbname }}
-{{- end }}
-EOF          
-      }     
+      }		          
     }
   }
 }

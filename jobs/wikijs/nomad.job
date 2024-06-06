@@ -22,6 +22,12 @@ job "wikijs" {
 				]	
       }
 
+      template {
+        env = true
+        destination = "local/env"
+        data = file("wikijs/template.hcl")          
+      }   
+
       resources {
         cpu    = 500
         memory = 512
@@ -41,19 +47,7 @@ job "wikijs" {
           interval = "60s"
           timeout  = "20s"
         }
-      }	   
-
-      template {
-        env = true
-        destination = "local/env"
-        data = <<EOF
-{{- with nomadVar "nomad/jobs" }}
-PUID={{ .puid }}
-PGID={{ .pgid }}
-TZ={{ .tz }}
-{{- end }}
-EOF               
-      }             
+      }	             
     }
   }
 }

@@ -26,7 +26,7 @@ job "influxdb" {
       template {
         env = true
         destination = "secrets/file.env"        
-        data = file("influxdb/nomad.hcl")          
+        data = file("influxdb/template.hcl")          
       }         
 
       resources {

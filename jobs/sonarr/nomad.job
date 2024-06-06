@@ -25,6 +25,12 @@ job "sonarr" {
         ]
       }	  
 
+      template {
+        env = true
+        destination = "local/env"        
+        data = file("sonarr/template.hcl")     
+      } 
+
       resources {
         cpu    = 1000
         memory = 1024
@@ -45,19 +51,7 @@ job "sonarr" {
           interval = "60s"
           timeout  = "20s"
         }
-      }	 
-
-      template {
-        env = true
-        destination = "local/env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs" }}
-PUID={{ .puid }}
-PGID={{ .pgid }}
-TZ={{ .tz }}
-{{- end }}
-EOF                  
-      }                     
+      }	                     
     }
   }
 }

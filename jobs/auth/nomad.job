@@ -20,7 +20,7 @@ job "auth" {
       template {
         env = true
         destination = "secrets/file.env"        
-        data = file("auth/nomad.hcl")       
+        data = file("auth/template.hcl")       
       }  
       
       resources {

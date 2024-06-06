@@ -27,7 +27,7 @@ job "plex" {
       template {
         env = true
         destination = "local/env"        
-        data = file("plex/nomad.hcl")  
+        data = file("plex/template.hcl")  
       }   
       
       resources {
