@@ -1,4 +1,4 @@
-variable "volumes"        { type = string }
+variable "services"       { type = string }
 variable "media_dir"      { type = string }
 variable "tld"            { type = string }
 
@@ -34,7 +34,7 @@ job "plex" {
         network_mode = "host"
         ports        = ["http"]
         volumes 		 = [
-          "${var.volumes}/plex:/config",
+          "${var.services}/plex:/config",
           "${var.media_dir}:/data",
           "/tmp:/transcode",
         ]

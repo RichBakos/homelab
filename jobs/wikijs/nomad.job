@@ -1,4 +1,4 @@
-variable "volumes"  { type = string }
+variable "services"  { type = string }
 variable "tld"      { type = string }
 
 job "wikijs" {
@@ -33,8 +33,8 @@ job "wikijs" {
         network_mode = "host"
         ports = ["http"]
         volumes = [
-          "${var.volumes}/wikijs:/config",
-					"${var.volumes}/wikijs/data:/data",
+          "${var.services}/wikijs:/config",
+					"${var.services}/wikijs/data:/data",
 				]	
       }
 

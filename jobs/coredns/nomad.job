@@ -6,7 +6,7 @@ job "coredns" {
     network {
       port "dns" { static = "53" }
     }    
-    
+  
     service {
       name = "coredns"
       port = "dns"
@@ -23,11 +23,11 @@ job "coredns" {
         args 				 = ["-conf", "/local/coredns/corefile"]
       }
 
-     template {
-        change_mode = "signal"
-        change_signal = "SIGHUP"
-        destination = "local/coredns/corefile"
-        data = file("coredns/.env")
+      template {
+          change_mode = "signal"
+          change_signal = "SIGHUP"
+          destination = "local/coredns/corefile"
+          data = file("coredns/.env")
       }
 
       resources {

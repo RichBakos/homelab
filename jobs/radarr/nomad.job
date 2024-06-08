@@ -1,7 +1,14 @@
-variable "volumes"        { type = string }
-variable "downloads_dir"  { type = string }
-variable "movies_dir"     { type = string }
-variable "tld"            { type = string }
+variable "tld"       { type = string }
+variable "services"  { type = string }
+variable "media"     { type = string }
+
+locals {
+  cname = "radarr"
+  image = "linuxserver/radarr"
+  config_dir = "${var.services}/${local.cname}"
+  downloads_dir = "${var.media}/downloads"
+  movies_dir = "${var.media}/movies"
+}
 
 job "radarr" {
   type  = "service"
@@ -12,13 +19,13 @@ job "radarr" {
     }
 
     service {
-      name = "radarr"
+      name = "${local.cname}"
       port = "http"
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.radarr.rule=Host(`radarr.${var.tld}`)",
-        "traefik.http.routers.radarr.entrypoints=websecure",					
-        "traefik.http.routers.radarr.middlewares=auth"
+        "traefik.http.routers.${local.cname}.rule=Host(`${local.cname}.${var.tld}`)",
+        "traefik.http.routers.${local.cname}.entrypoints=websecure",					
+        "traefik.http.routers.${local.cname}.middlewares=auth"
       ]
       check {
         type     = "tcp"
@@ -31,20 +38,20 @@ job "radarr" {
       driver = "docker"
 
       config {
-        image 	= "linuxserver/radarr"
+        image 	= "${local.image}"
         network_mode = "host"				
         ports 	= ["http"]
         volumes = [
-          "${var.volumes}/radarr:/config",
-          "${var.downloads_dir}:/downloads",
-          "${var.movies_dir}:/media/movies",
+          "${local.config_dir}:/config",
+          "${local.downloads_dir}:/downloads",
+          "${local.movies_dir}:/media/movies",
         ]
       }    
 
       template {
         env = true
         destination = "local/env"        
-        data = file("radarr/.env")     
+        data = file("${local.cname}/.env")     
       }    
 
       resources {

@@ -1,5 +1,4 @@
-variable "volumes"        { type = string }
-variable "downloads_dir"  { type = string }
+variable "services"        { type = string }
 variable "tld"            { type = string }
 
 job "prowlarr" {
@@ -8,7 +7,7 @@ job "prowlarr" {
   group "prowlarr" {
     network {
       port "http" { static = "9696" }
-    }	
+    }		 
 
     service {
       name = "prowlarr"
@@ -24,7 +23,7 @@ job "prowlarr" {
         interval = "60s"
         timeout  = "20s"
       }
-    }	 
+    }
 
     task "prowlarr" {
       driver = "docker"
@@ -34,7 +33,7 @@ job "prowlarr" {
         network_mode = "host"				
         ports 	= ["http"]
         volumes = [
-          "${var.volumes}/prowlarr:/config",
+          "${var.services}/prowlarr:/config",
         ]
       }
 

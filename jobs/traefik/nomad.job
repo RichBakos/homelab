@@ -1,4 +1,4 @@
-variable "volumes" { type = string }
+variable "services" { type = string }
 variable "tld" { type = string }
 
 job "traefik" {
@@ -11,7 +11,7 @@ job "traefik" {
       port "https" { static = "443" }
       port "admin" { static = "8080" }
     }
-      
+  
     service {
       name = "traefik"
       port = "http"
@@ -29,8 +29,8 @@ job "traefik" {
         interval = "10s"
         timeout  = "2s"
       }
-    } 
-          
+    }   
+
     task "traefik" {
       driver = "docker"
 
@@ -39,10 +39,11 @@ job "traefik" {
         network_mode = "host"
         ports = ["http", "https",]
 				volumes  = [
-          "${var.volumes}/traefik:/etc/traefik",
-          "${var.volumes}/traefik/dynamic:/etc/traefik/dynamic",
+          "${var.services}/traefik:/etc/traefik",
+          "${var.services}/traefik/dynamic:/etc/traefik/dynamic",
         ]
-      }          
+      }              
+
       template {
         env = true
         destination = "secrets/file.env"

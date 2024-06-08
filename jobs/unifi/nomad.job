@@ -1,5 +1,5 @@
 variable "tld"      { type = string }
-variable "volumes"  { type = string }
+variable "services"  { type = string }
 
 job "unifi" {
   type = "service"
@@ -34,9 +34,9 @@ job "unifi" {
         network_mode = "host"			
 				ports = ["http"]	
 				volumes = [
-					"${var.volumes}/unifi:/config",
-				  "${var.volumes}/unifi/data/db:/data/db",
-          "${var.volumes}/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
+					"${var.services}/unifi:/config",
+				  "${var.services}/unifi/data/db:/data/db",
+          "${var.services}/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
         ]
       }
  

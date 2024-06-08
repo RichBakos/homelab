@@ -2,7 +2,7 @@ variable "tld" {
   type = string
 }
 
-variable "volumes" {
+variable "services" {
   type = string
 }
 
@@ -23,7 +23,7 @@ job "cannery" {
         network_mode = "host"				
         ports = ["http"]
         volumes = [
-          "${var.volumes}/cannery:/config",
+          "${var.services}/cannery:/config",
         ]        
       }
 

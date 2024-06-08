@@ -1,7 +1,14 @@
-variable "volumes"        { type = string }
-variable "downloads_dir"  { type = string }
-variable "tv_dir"         { type = string }
-variable "tld"            { type = string }
+variable "tld"       { type = string }
+variable "media"     { type = string }
+variable "services"  { type = string }
+
+locals {
+  cname = "sonarr"
+  image = "linuxserver/sonarr"
+  config_dir = "${var.services}/${local.cname}"
+  downloads_dir = "${var.media}/downloads"
+  tv_dir = "${var.media}/tv "
+}
 
 job "sonarr" {
   type = "service"
@@ -9,16 +16,15 @@ job "sonarr" {
   group "sonarr" {
     network {
       port "http" { static = "8989" }
-    }
+    }	 
 
     service {
-      name = "sonarr"
+      name = "${local.cname}"
       port = "http"
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.sonarr.rule=Host(`sonarr.${var.tld}`)",
+        "traefik.http.routers.sonarr.rule=Host(`${local.cname}.${var.tld}`)",
         "traefik.http.routers.sonarr.entrypoints=websecure",					
-        "traefik.http.routers.sonarr.tls.certresolver=letsencrypt",
         "traefik.http.routers.sonarr.middlewares=auth"
       ]
       check {
@@ -26,26 +32,26 @@ job "sonarr" {
         interval = "60s"
         timeout  = "20s"
       }
-    }	 
+    }
 
     task "sonarr" {
       driver = "docker"
 
       config {
-        image = "linuxserver/sonarr"
+        image = "${local.image}"
         network_mode = "host"				
         ports = ["http"]
         volumes = [
-          "${var.volumes}/sonarr:/config",
+          "${var.config_dir}:/config",
           "${var.downloads_dir}:/downloads",
           "${var.tv_dir}:/media/tv",
         ]
       }	  
-
+      
       template {
         env = true
         destination = "local/env"        
-        data = file("sonarr/.env")     
+        data = file("${local.cname}/.env")     
       } 
 
       resources {

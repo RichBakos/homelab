@@ -1,4 +1,4 @@
-variable "volumes" { 
+variable "services" { 
   type = string 
 }
 
@@ -23,7 +23,7 @@ job "bitwarden" {
         network_mode = "host"				
         ports 	= ["http"]
         volumes = [
-          "${var.volumes}/bitwarden:/etc/bitwarden",
+          "${var.services}/bitwarden:/etc/bitwarden",
         ]
       }
 

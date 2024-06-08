@@ -1,4 +1,4 @@
-variable "volumes" { type = string }
+variable "services" { type = string }
 
 job "postgres" {
   type = "service"
@@ -8,6 +8,17 @@ job "postgres" {
       port  "db"  { static = "5432" }
     }
 
+    service {
+      name = "${NOMAD_JOB_NAME}"
+      port = "db"
+      check {
+        type     = "tcp"
+        port     = "db"
+        interval = "30s"
+        timeout  = "2s"
+      }
+    }  
+
     task "postgres" {
       driver = "docker"
       
@@ -16,38 +27,21 @@ job "postgres" {
         network_mode = "host"        
         ports = [ "db" ]
         volumes = [
-          "${var.volumes}/postgres:/var/lib/pgsql/data",
+          "${var.services}/postgres:/var/lib/pgsql/data",
         ]
       }
-
-      resources {
-        cpu    = 1000
-        memory = 1024
-      }  
-
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "db"
-        check {
-          type     = "tcp"
-          port     = "db"
-          interval = "30s"
-          timeout  = "2s"
-        }
-      }         
 
       template {
         env = true
         destination = "secrets/file.env"        
-        data = <<EOF
-          {{- with nomadVar "nomad/jobs/postgres" }}
-POSTGRES_DB={{ .postgres_db }}
-POSTGRES_USER={{ .postgres_user }}
-POSTGRES_PASSWORD={{ .postgres_password }}
-PGDATA={{ .pgdata }}
-          {{- end }}
-        EOF                  
-      }       
+        data = file("postgres/.env")                  
+      } 
+
+      resources {
+        cpu    = 1000
+        memory = 1024
+      }         
+    
     }
   }
 }

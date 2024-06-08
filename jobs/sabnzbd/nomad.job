@@ -1,4 +1,4 @@
-variable "volumes"        { type = string }
+variable "services"        { type = string }
 variable "downloads_dir"  { type = string }
 variable "media_dir"      { type = string }
 variable "tld"            { type = string }
@@ -35,12 +35,12 @@ job "sabnzbd" {
         image = "linuxserver/sabnzbd"
         ports = ["http"]
         volumes = [
-          "${var.volumes}/sabnzbd:/config",
+          "${var.services}/sabnzbd:/config",
           "${var.downloads_dir}:/downloads",
           "${var.media_dir}:/media",  
         ]
       }
-      
+
       template {
         env = true
         destination = "local/env"        

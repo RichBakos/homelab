@@ -15,7 +15,7 @@ job "samba" {
         timeout  = "20s"
       }
     }   
-
+    
     task "samba" {
       driver = "docker"
 
@@ -27,7 +27,7 @@ job "samba" {
           "/mnt/data/homelab:/shares/homelab",
         ]
       } 
-
+      
       template {
         env = true
         destination = "secrets/file.env"        

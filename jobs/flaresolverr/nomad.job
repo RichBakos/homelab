@@ -1,4 +1,4 @@
-variable "volumes"       { type = string }
+variable "services"       { type = string }
 variable "downloads_dir" { type = string }
 
 job "flaresolverr" {
@@ -26,8 +26,8 @@ job "flaresolverr" {
         image = "ghcr.io/flaresolverr/flaresolverr:latest"
         network_mode = "host"
         volumes = [
-          "${var.volumes}/flaresolverr/config:/config",
-          "${var.volumes}/flaresolverr/torrents:/torrents",
+          "${var.services}/flaresolverr/config:/config",
+          "${var.services}/flaresolverr/torrents:/torrents",
           "${var.downloads_dir}:/downloads",
         ]
       }

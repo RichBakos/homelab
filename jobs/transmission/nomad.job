@@ -1,4 +1,4 @@
-variable "volumes"        { type = string }
+variable "services"        { type = string }
 variable "downloads_dir"  { type = string }
 variable "tld"            { type = string }
 
@@ -35,10 +35,10 @@ job "transmission" {
         network_mode = "host"
         ports = ["http"]
         volumes = [
-          "${var.volumes}/transmission:/config",
+          "${var.services}/transmission:/config",
           "${var.downloads_dir}:/downloads",
           "${var.downloads_dir}/incomplete:/incomplete",
-          "${var.volumes}/transmission/torrents:/data/watch",
+          "${var.services}/transmission/torrents:/data/watch",
         ]
       }
 

@@ -1,4 +1,4 @@
-variable "volumes"  { type = string }
+variable "services"  { type = string }
 variable "tld"      { type = string }
 
 job "influxdb" {
@@ -33,8 +33,8 @@ job "influxdb" {
         network_mode = "host"        
         ports = [ "http" ]
         volumes = [
-          "${var.volumes}/influxdb/data:/var/lib/influxdb2",
-          "${var.volumes}/influxdb/config:/etc/influxdb2",
+          "${var.services}/influxdb/data:/var/lib/influxdb2",
+          "${var.services}/influxdb/config:/etc/influxdb2",
 
         ]
       }

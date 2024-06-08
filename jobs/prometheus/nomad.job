@@ -1,4 +1,4 @@
-variable "volumes" { type = string }
+variable "services" { type = string }
 variable "tld" { type = string }
 
 job "prometheus" {
@@ -9,6 +9,24 @@ job "prometheus" {
       port "http" { static = "9090" }
     }
 
+    service {
+      name = "${NOMAD_JOB_NAME}"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+        "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+        "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
+      ]
+      check {
+        type     = "http"
+        path     = "/-/healthy"
+        name     = "http"
+        interval = "5s"
+        timeout  = "2s"
+      }
+    }	    
+
     task "prometheus" {
       driver = "docker"
 
@@ -18,35 +36,11 @@ job "prometheus" {
 					ports = ["http"]
 #        	args = ["--storage.tsdb.path", "/opt/prometheus", "--web.listen-address", "0.0.0.0:9090", "--storage.tsdb.retention.time", "365d"]
         	volumes = [
-          	"${var.volumes}/prometheus:/opt/prometheus",						
+          	"${var.services}/prometheus:/opt/prometheus",						
 			      "local/alerts.yml:/prometheus/alerts.yml",
   	        "local/prometheus.yml:/etc/prometheus/prometheus.yml",
     	    ]
-      }
-
-
-     resources {
-        cpu    = 1000
-        memory = 512
-      }		
-
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-        check {
-          type     = "http"
-          path     = "/-/healthy"
-          name     = "http"
-          interval = "5s"
-          timeout  = "2s"
-        }
-      }	
+      }  
 
       template {
         destination   = "local/prometheus.yml"
@@ -55,6 +49,11 @@ job "prometheus" {
         env           = false
         data = file("prometheus/template.hcl")        
       }
+
+     resources {
+        cpu    = 1000
+        memory = 512
+      }		
 		}
   }
 }
