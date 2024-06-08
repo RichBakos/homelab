@@ -2,14 +2,6 @@ variable "tld"       { type = string }
 variable "media"     { type = string }
 variable "services"  { type = string }
 
-locals {
-  cname = "sonarr"
-  image = "linuxserver/sonarr"
-  config_dir = "${var.services}/${local.cname}"
-  downloads_dir = "${var.media}/downloads"
-  tv_dir = "${var.media}/tv "
-}
-
 job "sonarr" {
   type = "service"
 
@@ -19,11 +11,11 @@ job "sonarr" {
     }	 
 
     service {
-      name = "${local.cname}"
+      name = "sonarr"
       port = "http"
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.sonarr.rule=Host(`${local.cname}.${var.tld}`)",
+        "traefik.http.routers.sonarr.rule=Host(`sonarr.${var.tld}`)",
         "traefik.http.routers.sonarr.entrypoints=websecure",					
         "traefik.http.routers.sonarr.middlewares=auth"
       ]
@@ -38,20 +30,20 @@ job "sonarr" {
       driver = "docker"
 
       config {
-        image = "${local.image}"
+        image = "linuxserver/sonarr"
         network_mode = "host"				
         ports = ["http"]
         volumes = [
-          "${var.config_dir}:/config",
-          "${var.downloads_dir}:/downloads",
-          "${var.tv_dir}:/media/tv",
+          "${var.config_dir}/sonarr:/config",
+          "${var.media}/downloads:/downloads",
+          "${var.media}/tv:/media/tv",
         ]
       }	  
       
       template {
         env = true
         destination = "local/env"        
-        data = file("${local.cname}/.env")     
+        data = file("sonarr/.env")     
       } 
 
       resources {

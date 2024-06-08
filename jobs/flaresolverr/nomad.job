@@ -1,5 +1,5 @@
 variable "services"       { type = string }
-variable "downloads_dir" { type = string }
+variable "media" { type = string }
 
 job "flaresolverr" {
   type  = "service"
@@ -28,7 +28,7 @@ job "flaresolverr" {
         volumes = [
           "${var.services}/flaresolverr/config:/config",
           "${var.services}/flaresolverr/torrents:/torrents",
-          "${var.downloads_dir}:/downloads",
+          "${var.media}/downloads:/downloads",
         ]
       }
 

@@ -47,7 +47,7 @@ job "prometheus" {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         env           = false
-        data = file("prometheus/template.hcl")        
+        data = file("prometheus/.env")        
       }
 
      resources {

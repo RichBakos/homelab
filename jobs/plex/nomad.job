@@ -35,7 +35,7 @@ job "plex" {
         ports        = ["http"]
         volumes 		 = [
           "${var.services}/plex:/config",
-          "${var.media_dir}:/data",
+          "${var.media}:/data",
           "/tmp:/transcode",
         ]
       }

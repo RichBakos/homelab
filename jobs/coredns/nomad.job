@@ -7,12 +7,6 @@ job "coredns" {
       port "dns" { static = "53" }
     }    
   
-    service {
-      name = "coredns"
-      port = "dns"
-      tags = ["coredns"]
-    }  
-
     task "coredns" {
       driver = "docker"
 
@@ -27,7 +21,7 @@ job "coredns" {
           change_mode = "signal"
           change_signal = "SIGHUP"
           destination = "local/coredns/corefile"
-          data = file("coredns/.env")
+          data = file("coredns/.conf")
       }
 
       resources {

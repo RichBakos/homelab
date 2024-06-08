@@ -1,6 +1,6 @@
-variable "services"        { type = string }
-variable "downloads_dir"  { type = string }
-variable "tld"            { type = string }
+variable "services" { type = string }
+variable "media"    { type = string }
+variable "tld"      { type = string }
 
 job "transmission" {
   type = "service"
@@ -36,9 +36,9 @@ job "transmission" {
         ports = ["http"]
         volumes = [
           "${var.services}/transmission:/config",
-          "${var.downloads_dir}:/downloads",
-          "${var.downloads_dir}/incomplete:/incomplete",
-          "${var.services}/transmission/torrents:/data/watch",
+          "${var.services}/transmission/torrents:/data/watch",          
+          "${var.media}/downloads:/downloads",
+          "${var.media}/downloads/incomplete:/incomplete",
         ]
       }
 

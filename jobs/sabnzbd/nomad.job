@@ -1,7 +1,6 @@
-variable "services"        { type = string }
-variable "downloads_dir"  { type = string }
-variable "media_dir"      { type = string }
-variable "tld"            { type = string }
+variable "services" { type = string }
+variable "media"    { type = string }
+variable "tld"      { type = string }
 
 job "sabnzbd" {
   type = "service"
@@ -36,8 +35,8 @@ job "sabnzbd" {
         ports = ["http"]
         volumes = [
           "${var.services}/sabnzbd:/config",
-          "${var.downloads_dir}:/downloads",
-          "${var.media_dir}:/media",  
+          "${var.media}/downloads:/downloads",
+          "${var.media}:/media",  
         ]
       }
 
