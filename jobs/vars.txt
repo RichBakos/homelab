@@ -1,9 +1,8 @@
-unifi/jobvars.hcl
-cannery/jobvars.hcl
-traefik/jobvars.hcl
-bitwarden/jobvars.hcl
-auth/jobvars.hcl
-postgres/jobvars.hcl
-samba/jobvars.hcl
-plex/jobvars.hcl
-coredns/jobvars.hcl
+influxdb/env.vars.hcl
+unifi/env.vars.hcl
+traefik/env.vars.hcl
+auth/env.vars.hcl
+samba/env.vars.hcl
+plex/env.vars.hcl
+coredns/env.vars.hcl
+keepalived/env.vars.hcl

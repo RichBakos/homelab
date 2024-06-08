@@ -1,4 +1,4 @@
-variable tld {}
+variable tld { type = string }
 
 job "auth" {
   type = "service"
@@ -7,6 +7,25 @@ job "auth" {
     network {
       port "http" { static = "4181" }
     }
+
+    service {
+      name = "auth"      
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.auth.rule=Host(`auth.${var.tld}`)",
+        "traefik.http.routers.auth.entrypoints=websecure",
+        "traefik.http.middlewares.auth.forwardAuth.address=http://auth.service.consul:4181/",
+        "traefik.http.middlewares.auth.forwardAuth.trustForwardHeader=true",
+        "traefik.http.middlewares.auth.forwardAuth.authResponseHeaders=X-Forwarded-User",
+        "traefik.http.routers.auth.middlewares=auth"
+      ]        
+      check {
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "2s"
+      }
+    } 
 
     task "auth" {
       driver = "docker"
@@ -20,32 +39,13 @@ job "auth" {
       template {
         env = true
         destination = "secrets/file.env"        
-        data = file("auth/template.hcl")       
+        data = file("auth/.env")       
       }  
       
       resources {
         cpu    = 200
         memory = 256
-      }   
-
-      service {
-        port = "http"
-        name = "${NOMAD_JOB_NAME}"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.auth.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.auth.entrypoints=websecure",
-          "traefik.http.middlewares.auth.forwardAuth.address=http://${NOMAD_JOB_NAME}.service.consul:4181/",
-          "traefik.http.middlewares.auth.forwardAuth.trustForwardHeader=true",
-          "traefik.http.middlewares.auth.forwardAuth.authResponseHeaders=X-Forwarded-User",
-          "traefik.http.routers.auth.middlewares=auth"
-        ]        
-        check {
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "2s"
-        }
-      }          
+      }            
     }      
   }
 }

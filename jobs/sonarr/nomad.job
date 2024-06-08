@@ -1,7 +1,7 @@
-variable "volumes" { type = string }
-variable "downloads_dir" { type = string }
-variable "tv_dir" { type = string }
-variable "tld" { type = string }
+variable "volumes"        { type = string }
+variable "downloads_dir"  { type = string }
+variable "tv_dir"         { type = string }
+variable "tld"            { type = string }
 
 job "sonarr" {
   type = "service"
@@ -10,6 +10,23 @@ job "sonarr" {
     network {
       port "http" { static = "8989" }
     }
+
+    service {
+      name = "sonarr"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.sonarr.rule=Host(`sonarr.${var.tld}`)",
+        "traefik.http.routers.sonarr.entrypoints=websecure",					
+        "traefik.http.routers.sonarr.tls.certresolver=letsencrypt",
+        "traefik.http.routers.sonarr.middlewares=auth"
+      ]
+      check {
+        type     = "tcp"
+        interval = "60s"
+        timeout  = "20s"
+      }
+    }	 
 
     task "sonarr" {
       driver = "docker"
@@ -28,30 +45,13 @@ job "sonarr" {
       template {
         env = true
         destination = "local/env"        
-        data = file("sonarr/template.hcl")     
+        data = file("sonarr/.env")     
       } 
 
       resources {
         cpu    = 1000
         memory = 1024
-      }
-
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.tls.certresolver=letsencrypt",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-        check {
-          type     = "tcp"
-          interval = "60s"
-          timeout  = "20s"
-        }
-      }	                     
+      }                    
     }
   }
 }

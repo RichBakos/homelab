@@ -1,10 +1,5 @@
-variable "volumes" { 
-  type = string 
-}
-
-variable "tld" { 
-  type = string 
-}
+variable "tld"      { type = string }
+variable "volumes"  { type = string }
 
 job "unifi" {
   type = "service"
@@ -13,6 +8,23 @@ job "unifi" {
     network {
       port "http" { static = "8443" }
     }
+
+    service {
+      name = "unifi"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.unifi.rule=Host(`unifi.${var.tld}`)",
+        "traefik.http.routers.unifi.entrypoints=websecure",					
+        "traefik.http.services.unifi.loadbalancer.server.scheme=https",				
+        "traefik.http.routers.unifi.middlewares=auth",
+      ]
+      check {
+        type     = "tcp"
+        interval = "60s"
+        timeout  = "20s"
+      }
+    }		    
 
     task "unifi" {
       driver = "docker"
@@ -31,30 +43,13 @@ job "unifi" {
        template {
         env = true        
         destination = "secrets/file.env"
-        data = file("unifi/tamplate.hcl")     
+        data = file("unifi/.env")     
       } 
 
       resources {
         cpu    = 1000
         memory = 1536
-      }
-
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.services.${NOMAD_JOB_NAME}.loadbalancer.server.scheme=https",				
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth",
-        ]
-        check {
-          type     = "tcp"
-          interval = "60s"
-          timeout  = "20s"
-        }
-      }		          
+      }          
     }
   }
 }

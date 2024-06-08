@@ -8,6 +8,11 @@ job "mongo" {
       port "db" { static = "27017" }
     }
 
+    service {
+      name = "mongo"        
+      port = "db"
+    }		
+
     task "mongo" {
       driver = "docker"
 
@@ -25,11 +30,6 @@ job "mongo" {
         cpu    = 1000
         memory = 1024
       }
-
-      service {
-        name = "${NOMAD_JOB_NAME}"        
-        port = "db"
-      }		
     }
   }
 }

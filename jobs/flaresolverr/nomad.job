@@ -1,5 +1,4 @@
-variable "tld" { type = string }
-variable "volumes" { type = string }
+variable "volumes"       { type = string }
 variable "downloads_dir" { type = string }
 
 job "flaresolverr" {
@@ -10,6 +9,16 @@ job "flaresolverr" {
       port "http" { static = "8191" }
     }
     
+    service {
+      name = "flaresolverr"       
+      port = "http"    	      				
+      check {
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "2s"
+      }				
+    }
+
 		task "flaresolverr" {
       driver = "docker"
 
@@ -26,16 +35,6 @@ job "flaresolverr" {
       resources {
         cpu    = 500
         memory = 512
-      }
-
-      service {
-        port = "http"
-				name = "${NOMAD_JOB_NAME}"     	      				
-        check {
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "2s"
-        }				
       }
     }
   }

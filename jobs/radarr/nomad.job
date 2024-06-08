@@ -1,7 +1,7 @@
-variable "volumes" { type = string }
-variable "downloads_dir" { type = string }
-variable "movies_dir" { type = string }
-variable "tld" { type = string }
+variable "volumes"        { type = string }
+variable "downloads_dir"  { type = string }
+variable "movies_dir"     { type = string }
+variable "tld"            { type = string }
 
 job "radarr" {
   type  = "service"
@@ -10,6 +10,22 @@ job "radarr" {
     network {
       port "http" { static = "7878" }
     }
+
+    service {
+      name = "radarr"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.radarr.rule=Host(`radarr.${var.tld}`)",
+        "traefik.http.routers.radarr.entrypoints=websecure",					
+        "traefik.http.routers.radarr.middlewares=auth"
+      ]
+      check {
+        type     = "tcp"
+        interval = "60s"
+        timeout  = "20s"
+      }
+    }	
 
     task "radarr" {
       driver = "docker"
@@ -28,29 +44,13 @@ job "radarr" {
       template {
         env = true
         destination = "local/env"        
-        data = file("radarr/template.hcl")     
+        data = file("radarr/.env")     
       }    
-      
+
       resources {
         cpu    = 1000
         memory = 1024
-      }
-
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-        check {
-          type     = "tcp"
-          interval = "60s"
-          timeout  = "20s"
-        }
-      }		           
+      }	           
     }
   }
 }

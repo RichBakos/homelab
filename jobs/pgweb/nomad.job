@@ -8,6 +8,23 @@ job "pgweb" {
       port "http" { static = 8082 }
     }
 
+    service {
+      name = "pgweb"        
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.pgweb.rule=Host(`pgweb.${var.tld}`)",
+        "traefik.http.routers.pgweb.entrypoints=websecure",					
+        "traefik.http.routers.pgweb.middlewares=auth"
+      ]
+      check {
+        type     = "http"
+        path     = "/"
+        interval = "10s"
+        timeout  = "2s"
+      }
+    }
+
     task "pgweb" {
       driver = "docker"
 
@@ -22,23 +39,6 @@ job "pgweb" {
       resources {
         cpu = 128
         memory = 128
-      }
-
-      service {
-        name = "${NOMAD_JOB_NAME}"        
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-        check {
-          type     = "http"
-          path     = "/"
-          interval = "10s"
-          timeout  = "2s"
-        }
       }
     }
   }

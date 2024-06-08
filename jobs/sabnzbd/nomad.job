@@ -1,7 +1,7 @@
-variable "volumes" { type = string }
-variable "downloads_dir" { type = string }
-variable "media_dir" { type = string }
-variable "tld" { type = string }
+variable "volumes"        { type = string }
+variable "downloads_dir"  { type = string }
+variable "media_dir"      { type = string }
+variable "tld"            { type = string }
 
 job "sabnzbd" {
   type = "service"
@@ -9,6 +9,23 @@ job "sabnzbd" {
   group "sabnzbd" {    
     network {
       port "http" { to = "8080" }
+    }
+
+    service {
+      port = "http"
+      name = "sabnzbd"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.${var.tld}`)",
+        "traefik.http.routers.sabnzbd.entrypoints=websecure",					
+        "traefik.http.routers.sabnzbd.middlewares=auth"
+      ]
+      check {
+        type     = "http"
+        path     = "/"
+        interval = "10s"
+        timeout  = "2s"
+      }
     }
 
     task "sabnzbd" {
@@ -23,40 +40,18 @@ job "sabnzbd" {
           "${var.media_dir}:/media",  
         ]
       }
-  
-      resources {
-        cpu    = 1000
-        memory = 1024
-      }
-
-      service {
-        port = "http"
-        name = "${NOMAD_JOB_NAME}"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-        check {
-          type     = "http"
-          path     = "/"
-          interval = "10s"
-          timeout  = "2s"
-        }
-      }
-
+      
       template {
         env = true
         destination = "local/env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs" }}
-PUID={{ .puid }}
-PGID={{ .pgid }}
-TZ={{ .tz }}
-{{- end }}
-EOF          
+        data = file("sabnzbd/.env")    
       }    
+
+      resources {
+        cpu    = 1000
+        memory = 1024
+     
+      }      
     }
   }
 }

@@ -1,5 +1,5 @@
 variable "volumes" { type = string }
-variable "tld" { type = string }
+variable "tld"     { type = string }
 
 job "hass" {
   type = "service"
@@ -7,6 +7,21 @@ job "hass" {
   group "hass" {
     network {
       port "http" { static = "8123" }
+    }
+
+    service {
+      name = "hass"      
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.hass.rule=Host(`hass.${var.tld}`)",
+        "traefik.http.routers.hass.entrypoints=websecure",					
+      ]        
+      check {
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "2s"
+      }
     }
 
     task "hass" {
@@ -23,21 +38,6 @@ job "hass" {
       resources {
         cpu    = 1000
         memory = 1024
-      }
-
-      service {
-        port = "http"
-        name = "${NOMAD_JOB_NAME}"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-        ]        
-        check {
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "2s"
-        }
       }
     }
   }

@@ -1,13 +1,29 @@
-variable "volumes" { type = string }
-variable "tld" { type = string }
+variable "volumes"  { type = string }
+variable "tld"      { type = string }
 
 job "wikijs" {
   type = "service"
 
-  group "wikijs" {
+  group "$wikijs" {
     network {
       port "http" { static = 3000 }
     }
+
+    service {
+      port = "http"
+      name = "wikijs"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.wikijs.rule=Host(`wikijs.${var.tld}`)",
+        "traefik.http.routers.wikijs.entrypoints=websecure",					
+        "traefik.http.routers.wikijs.middlewares=auth"
+      ]
+      check {
+        type     = "tcp"
+        interval = "60s"
+        timeout  = "20s"
+      }
+    }	 
 
     task "wikijs" {
       driver = "docker"
@@ -25,29 +41,13 @@ job "wikijs" {
       template {
         env = true
         destination = "local/env"
-        data = file("wikijs/template.hcl")          
+        data = file("wikijs/.env")          
       }   
 
       resources {
         cpu    = 500
         memory = 512
-      }  
-
-      service {
-        port = "http"
-        name = "${NOMAD_JOB_NAME}"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-        check {
-          type     = "tcp"
-          interval = "60s"
-          timeout  = "20s"
-        }
-      }	             
+      }              
     }
   }
 }

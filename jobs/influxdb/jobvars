@@ -1,8 +1,0 @@
-path = "nomad/jobs/influxdb"
-items {
-  mode=
-  user=
-  password=
-  org=
-  bucket=
-}

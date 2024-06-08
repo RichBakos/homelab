@@ -1,5 +1,5 @@
-variable "volumes" { type = string }
-variable "tld" { type = string }
+variable "volumes"  { type = string }
+variable "tld"      { type = string }
 
 job "influxdb" {
   type = "service"
@@ -8,6 +8,22 @@ job "influxdb" {
     network {
       port  "http"  { static = "8086" }
     }
+
+    service {
+      name = "influxdb"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.influxdb.rule=Host(`influxdb.${var.tld}`)",
+        "traefik.http.routers.influxdb.entrypoints=websecure",					
+      ]         
+      check {
+        type     = "tcp"
+        port     = "http"
+        interval = "30s"
+        timeout  = "2s"
+      }
+    } 
 
     task "influxdb" {
       driver = "docker"
@@ -26,29 +42,13 @@ job "influxdb" {
       template {
         env = true
         destination = "secrets/file.env"        
-        data = file("influxdb/template.hcl")          
+        data = file("influxdb/.env")          
       }         
 
       resources {
         cpu    = 1000
         memory = 1024
-      }  
-      
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-        ]         
-        check {
-          type     = "tcp"
-          port     = "http"
-          interval = "30s"
-          timeout  = "2s"
-        }
-      }             
+      }              
     }
   }
 }

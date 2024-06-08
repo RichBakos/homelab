@@ -7,6 +7,12 @@ job "coredns" {
       port "dns" { static = "53" }
     }    
     
+    service {
+      name = "coredns"
+      port = "dns"
+      tags = ["coredns"]
+    }  
+
     task "coredns" {
       driver = "docker"
 
@@ -21,19 +27,13 @@ job "coredns" {
         change_mode = "signal"
         change_signal = "SIGHUP"
         destination = "local/coredns/corefile"
-        data = file("coredns/template.hcl")
+        data = file("coredns/.env")
       }
 
       resources {
         cpu    = 100
         memory = 128
       }
-
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "dns"
-        tags = ["coredns"]
-      }  
     }
   }
 }

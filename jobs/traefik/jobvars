@@ -1,5 +1,0 @@
-path = "nomad/jobs/traefik"
-items {
-	cf_api_email=
-	cf_api_key=
-}

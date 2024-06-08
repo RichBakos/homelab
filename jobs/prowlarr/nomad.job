@@ -1,6 +1,6 @@
-variable "volumes" { type = string }
-variable "downloads_dir" { type = string }
-variable "tld" { type = string }
+variable "volumes"        { type = string }
+variable "downloads_dir"  { type = string }
+variable "tld"            { type = string }
 
 job "prowlarr" {
   type = "service"
@@ -9,6 +9,22 @@ job "prowlarr" {
     network {
       port "http" { static = "9696" }
     }	
+
+    service {
+      name = "prowlarr"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${var.tld}`)",
+        "traefik.http.routers.prowlarr.entrypoints=websecure",					
+        "traefik.http.routers.prowlarr.middlewares=auth"
+      ]
+      check {
+        type     = "tcp"
+        interval = "60s"
+        timeout  = "20s"
+      }
+    }	 
 
     task "prowlarr" {
       driver = "docker"
@@ -25,29 +41,13 @@ job "prowlarr" {
       template {
         env = true
         destination = "local/env"        
-        data = file("prowlarr/template.hcl")        
+        data = file("prowlarr/.env")        
       }  
 
       resources {
         cpu    = 500
         memory = 512
-      }
-
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]
-        check {
-          type     = "tcp"
-          interval = "60s"
-          timeout  = "20s"
-        }
-      }	          
+      }         
     }
   }
 }

@@ -6,6 +6,16 @@ job "samba" {
       port "smb" { static = "445" }
     }
 
+    service {
+      name = "samba"
+      port = "smb"
+      check {
+        type     = "tcp"
+        interval = "60s"
+        timeout  = "20s"
+      }
+    }   
+
     task "samba" {
       driver = "docker"
 
@@ -21,23 +31,13 @@ job "samba" {
       template {
         env = true
         destination = "secrets/file.env"        
-        data = file("samba/template.hcl")              
+        data = file("samba/.env")              
       } 
-      
+
       resources {
         cpu    = 200
         memory = 256
-      }
-    
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "smb"
-        check {
-          type     = "tcp"
-          interval = "60s"
-          timeout  = "20s"
-        }
-      }      		      
+      }   		      
     }
   }
 }

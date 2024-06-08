@@ -18,7 +18,7 @@ job "keepalived" {
       template {    
         destination = "local/env.yaml"
         change_mode = "restart"
-        data = file("keepalived/template.hcl")  
+        data = file("keepalived/.env")  
       }
 
       resources {

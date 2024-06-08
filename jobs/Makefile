@@ -8,18 +8,18 @@ help:##.................Show help
 
 .PHONY: set-vars-%
 set-vars-%:##........Create/update vars for a specific job
-	nomad var put -force @$*/jobvars.hcl
+	nomad var put -force @$*/env.vars.hcl
 
 .PHONY: set-global-vars
 set-global-vars:##...Create/update global vars
-	find . -type f -name globalvars.hcl | sed -e 's,^\./,,' > vars.txt
+	find . -type f -name global.env.vars.hcl | sed -e 's,^\./,,' > vars.txt
 	cat vars.txt | while read line; do nomad var put -force "@$$line"; done;
 
 .PHONY: set-all-vars
 set-all-vars:##......Create/update all global and job variables
-	find . -type f -name globalvars.hcl | sed -e 's,^\./,,' > vars.txt	
+	find . -type f -name global.env.vars.hcl | sed -e 's,^\./,,' > vars.txt	
 	cat vars.txt | while read line; do nomad var put -force "@$$line"; done;
-	find . -type f -name jobvars.hcl | sed -e 's,^\./,,' > vars.txt	
+	find . -type f -name env.vars.hcl | sed -e 's,^\./,,' > vars.txt	
 	cat vars.txt | while read line; do nomad var put -force "@$$line"; done;
 
 .PHONY: deploy-%

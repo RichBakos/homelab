@@ -1,5 +1,6 @@
+.env
 .envrc
 .bak
 .txt
-jobvars.hcl
-globalvars.hcl
+env.vars.hcl
+global.env.vars.hcl
