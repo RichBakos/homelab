@@ -15,6 +15,23 @@ job "cannery" {
       port "http" { static = "4000" }
     }
 
+    service {
+      name = "${NOMAD_JOB_NAME}"
+      port = "http"
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
+        "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
+        "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
+      ]        
+
+      check {
+        type     = "tcp"
+        interval = "60s"
+        timeout  = "20s"
+      }
+    }		
+
     task "cannery" {
       driver = "docker"
 
@@ -25,45 +42,18 @@ job "cannery" {
         volumes = [
           "${var.services}/cannery:/config",
         ]        
-      }
+      }      
 
-      service {
-        name = "${NOMAD_JOB_NAME}"
-        port = "http"
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.rule=Host(`${NOMAD_JOB_NAME}.${var.tld}`)",
-          "traefik.http.routers.${NOMAD_JOB_NAME}.entrypoints=websecure",					
-          "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
-        ]        
-
-        check {
-          type     = "tcp"
-          interval = "60s"
-          timeout  = "20s"
-        }
-      }		      
+      template {
+        env = true
+        destination = "secrets/env"
+        data = file("cannery/.env")
+      }   
 
       resources {
         cpu    = 200
         memory = 256
       }
-
-      template {
-        env = true
-        destination = "secrets/file.env"        
-        data = <<EOF
-{{- with nomadVar "nomad/jobs/cannery" }}
-HOST={{ .host }}
-DATABASE_URL={{ .databse_url }}
-SECRET_KEY_BASE={{ .secret_key_base }}
-SMTP_HOST={{ .smtp_host }}
-SMTP_PORT={{ .smtp_port }}
-SMTP_USERNAME={{ .smtp_user }}
-SMTP_PASSWORD={{ .smtp_password }}
-{{- end }}
-        EOF                  
-      }      
     }
   }
 }

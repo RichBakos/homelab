@@ -41,7 +41,7 @@ job "wikijs" {
       template {
         env = true
         destination = "local/env"
-        data = file("wikijs/.env")          
+        data = file("wikijs/.env")           
       }   
 
       resources {

@@ -38,8 +38,8 @@ job "auth" {
 
       template {
         env = true
-        destination = "secrets/file.env"        
-        data = file("auth/.env")       
+        destination = "secrets/env"        
+        data = file("auth/.env")
       }  
       
       resources {

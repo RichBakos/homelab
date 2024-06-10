@@ -18,10 +18,10 @@ job "coredns" {
       }
 
       template {
-          change_mode = "signal"
-          change_signal = "SIGHUP"
-          destination = "local/coredns/corefile"
-          data = file("coredns/.conf")
+        change_mode = "signal"
+        change_signal = "SIGHUP"
+        destination = "local/coredns/corefile"
+        data = file("coredns/corefile") 
       }
 
       resources {

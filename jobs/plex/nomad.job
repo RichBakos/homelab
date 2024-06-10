@@ -1,6 +1,6 @@
-variable "services"       { type = string }
-variable "media_dir"      { type = string }
-variable "tld"            { type = string }
+variable "services" { type = string }
+variable "media"    { type = string }
+variable "tld"      { type = string }
 
 job "plex" {
   type = "service"
@@ -28,7 +28,7 @@ job "plex" {
 
     task "plex" {
       driver = "docker"
-			
+
       config {
         image        = "plexinc/pms-docker"
         network_mode = "host"
@@ -42,10 +42,10 @@ job "plex" {
 
       template {
         env = true
-        destination = "local/env"        
-        data = file("plex/.env")  
+        destination = "local/env"
+        data = file("plex/.env") 
       }   
-      
+
       resources {
         cpu    = 1500
         memory = 1536

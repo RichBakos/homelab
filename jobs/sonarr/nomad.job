@@ -27,7 +27,7 @@ job "sonarr" {
     }
 
     task "sonarr" {
-      driver = "docker"
+      driver = "docker" 
 
       config {
         image = "linuxserver/sonarr"
@@ -39,12 +39,12 @@ job "sonarr" {
           "${var.media}/tv:/media/tv",
         ]
       }	  
-      
+
       template {
         env = true
-        destination = "local/env"        
-        data = file("sonarr/.env")     
-      } 
+        destination = "local/env"
+        data = file("sonarr.env") 
+      }   
 
       resources {
         cpu    = 1000

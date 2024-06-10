@@ -27,7 +27,7 @@ job "radarr" {
     }	
 
     task "radarr" {
-      driver = "docker"
+      driver = "docker" 
 
       config {
         image 	= "linuxserver/radarr"
@@ -42,9 +42,9 @@ job "radarr" {
 
       template {
         env = true
-        destination = "local/env"        
-        data = file("radarr/.env")     
-      }    
+        destination = "local/env"
+        data = file("radarr/.env") 
+      }   
 
       resources {
         cpu    = 1000

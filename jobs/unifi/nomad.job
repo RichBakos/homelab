@@ -42,7 +42,7 @@ job "unifi" {
  
        template {
         env = true        
-        destination = "secrets/file.env"
+        destination = "secrets/env"
         data = file("unifi/.env")     
       } 
 

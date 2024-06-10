@@ -39,9 +39,10 @@ job "prowlarr" {
 
       template {
         env = true
-        destination = "local/env"        
-        data = file("prowlarr/.env")        
+        destination = "local/env"
+        data = file("prowlarr/.env") 
       }  
+
 
       resources {
         cpu    = 500

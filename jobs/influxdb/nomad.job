@@ -41,9 +41,9 @@ job "influxdb" {
 
       template {
         env = true
-        destination = "secrets/file.env"        
-        data = file("influxdb/.env")          
-      }         
+        destination = "secrets/env"
+        data = file("influxdb/.env") 
+      }        
 
       resources {
         cpu    = 1000

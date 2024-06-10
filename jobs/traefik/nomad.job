@@ -39,16 +39,28 @@ job "traefik" {
         network_mode = "host"
         ports = ["http", "https",]
 				volumes  = [
-          "${var.services}/traefik:/etc/traefik",
-          "${var.services}/traefik/dynamic:/etc/traefik/dynamic",
+          "local/traefik.toml:/etc/traefik/traefik.toml",
+          "local/dynamic/rules.toml:/etc/traefik/dynamic/rules.toml",
         ]
       }              
 
       template {
         env = true
-        destination = "secrets/file.env"
+        destination = "secrets/env"
         data = file("traefik/.env")       
       }        
+
+      template {
+        destination = "local/traefik.toml"
+        change_mode   = "signal"
+        change_signal = "SIGINT"         
+        data = file("traefik/traefik.toml")       
+      }   
+
+      template {
+        destination = "local/dynamic/rules.toml"       
+        data = file("traefik/rules.toml")       
+      }
 
       resources {
         cpu    = 500

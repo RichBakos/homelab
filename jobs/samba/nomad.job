@@ -30,8 +30,8 @@ job "samba" {
       
       template {
         env = true
-        destination = "secrets/file.env"        
-        data = file("samba/.env")              
+        destination = "secrets/env"        
+        data = file("samba/.env")
       } 
 
       resources {

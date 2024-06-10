@@ -33,9 +33,9 @@ job "postgres" {
 
       template {
         env = true
-        destination = "secrets/file.env"        
-        data = file("postgres/.env")                  
-      } 
+        destination = "secrets/env"
+        data = file("postgres/.env") 
+      }  
 
       resources {
         cpu    = 1000

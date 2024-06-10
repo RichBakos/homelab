@@ -29,7 +29,7 @@ job "transmission" {
 
     task "transmission" {
       driver = "docker"
-			
+ 			
       config {
         image = "linuxserver/transmission"
         network_mode = "host"
@@ -45,8 +45,8 @@ job "transmission" {
       template {
         env = true
         destination = "local/env"
-        data = file("transmission/.env")          
-      }               
+        data = file("transmission/.env") 
+      }    
 
       resources {
         cpu    = 500
