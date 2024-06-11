@@ -45,7 +45,7 @@ job "transmission" {
       template {
         env = true
         destination = "local/env"
-        data = file("transmission/.env") 
+        data = file("global/.env") 
       }    
 
       resources {

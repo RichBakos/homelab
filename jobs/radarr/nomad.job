@@ -40,10 +40,15 @@ job "radarr" {
         ]
       }    
 
+      artifact {
+        source = "https://github.com/RichBakos/homelab/blob/main/jobs/global/env"
+        destination = "local/env.tpl"
+      }
+
       template {
         env = true
+        source = "local/env.tpl"
         destination = "local/env"
-        data = file("global/.env") 
       }   
 
       resources {

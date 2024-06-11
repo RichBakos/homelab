@@ -43,7 +43,7 @@ job "sonarr" {
       template {
         env = true
         destination = "local/env"
-        data = file("sonarr.env") 
+        data = file("global/.env") 
       }   
 
       resources {
