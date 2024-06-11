@@ -24,8 +24,6 @@ set-all-vars:##......Create/update all global and job variables
 
 .PHONY: deploy-%
 deploy-%:##..........Deploy a specific job
-	find . -type f -wholename $*/env.vars.hcl | sed -e 's,^\./,,' > vars.txt	
-	cat vars.txt | while read line; do nomad var put -force "@$$line"; done;
 	nomad job run $*/nomad.job
 
 .PHONY: deploy-all-jobs

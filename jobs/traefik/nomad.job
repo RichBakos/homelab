@@ -54,7 +54,7 @@ job "traefik" {
         destination = "local/traefik.toml"
         change_mode   = "signal"
         change_signal = "SIGINT"         
-        data = file("traefik/traefik.toml")       
+        data = fileexists("traefik/traefik.toml")       
       }   
 
       template {

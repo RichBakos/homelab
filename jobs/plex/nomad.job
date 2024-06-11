@@ -42,8 +42,14 @@ job "plex" {
 
       template {
         env = true
-        destination = "local/env"
+        destination = "local/plex.env"
         data = file("plex/.env") 
+      }   
+
+      template {
+        env = true
+        destination = "local/global.env"
+        data = file("global/.env") 
       }   
 
       resources {

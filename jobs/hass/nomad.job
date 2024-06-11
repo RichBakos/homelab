@@ -31,7 +31,7 @@ job "hass" {
         image = "homeassistant/home-assistant:latest"
         network_mode = "host"
         volumes = [
-          "${var.volumes}/hass:/config",
+          "${var.services}/hass:/config",
         ]
       }
 

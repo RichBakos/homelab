@@ -42,6 +42,12 @@ job "unifi" {
  
        template {
         env = true        
+        destination = "local/env"
+        data = file("global/.env")     
+      } 
+
+       template {
+        env = true        
         destination = "secrets/env"
         data = file("unifi/.env")     
       } 

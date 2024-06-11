@@ -43,7 +43,7 @@ job "radarr" {
       template {
         env = true
         destination = "local/env"
-        data = file("radarr/.env") 
+        data = file("global/.env") 
       }   
 
       resources {

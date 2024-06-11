@@ -40,7 +40,7 @@ job "prowlarr" {
       template {
         env = true
         destination = "local/env"
-        data = file("prowlarr/.env") 
+        data = file("global/.env") 
       }  
 
 
