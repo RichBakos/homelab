@@ -1,8 +1,6 @@
-.envrc
-.env
-.bak
-.txt
+*.bak
+*.tfvars
+.vscode
 traefik.toml
 rules.toml
-env.vars.hcl
-global.env.vars.hcl
+acme.json

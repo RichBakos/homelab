@@ -1,0 +1,40 @@
+job "drawio" {
+  type      = "service"
+  namespace = "productivity"
+
+
+  group "drawio" {
+    network {
+      port "http" { to = 8080 }
+    }
+
+    service {
+      name = "drawio"
+      port = "http"
+      tags = [
+        "traefik.enable=true",					
+        "traefik.http.routers.drawio.middlewares=auth"
+      ]
+      check {
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "2s"
+      }
+    }   
+
+    task "drawio" {
+      driver = "docker"
+
+      config {
+        image        = "jgraph/drawio"
+        network_mode = "bridge"
+        ports        = ["http"]
+      }
+
+      resources {
+        cpu    = 1500
+        memory = 1536
+      }            
+    }
+  }
+}

@@ -1,0 +1,64 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+serversTransport:
+  insecureSkipVerify: true
+
+entryPoints:
+  web:
+    address: :80
+    web:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  websecure:
+    address: :443
+    websecure:
+      http:
+        tls:
+        certResolver: cloudflare
+        domains:
+          - main: bakos.me
+          - sans: [*.bakos.me]
+
+providers:
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+  consulCatalog:
+    exposedByDefault: false
+    endpoint:
+      address: 127.0.0.1:8500
+      datacenter: dc1
+
+api:
+  insecure: false
+  dashboard: true
+  debug: false
+  disabledashboardad: true
+
+log:
+  level: info
+
+accessLog:
+  format: json
+  filters:
+    statusCodes: ["200", "300-302", "400-404"]
+    retryAttempts: true
+    minDuration: 10ms
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: ${email}
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+      storage: /etc/traefik/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 10s
+

@@ -1,0 +1,70 @@
+[http.routers]
+
+  [http.routers.pfsense]
+    rule = "Host(`pfsense.bakos.me`)"
+    entrypoints = ["websecure"]
+    middlewares = ["auth"]
+    service = "pfsense"
+
+  [http.routers.pbs]
+    rule = "Host(`pbs.bakos.me`)"
+    entrypoints = ["websecure"]
+    middlewares = ["auth"]
+    service = "pbs"
+
+  [http.routers.pmx]
+    rule = "Host(`pmx.bakos.me`)"
+    entrypoints = ["websecure"]
+    middlewares = ["auth"]
+    service = "pmx"
+
+  [http.routers.nomad]
+    rule = "Host(`nomad.bakos.me`)"
+    entrypoints = ["websecure"]
+    middlewares = ["auth"]
+    service = "nomad"
+
+  [http.routers.consul]
+    rule = "Host(`consul.bakos.me`)"
+    entrypoints = ["websecure"]
+    middlewares = ["auth"]
+    service = "consul"
+
+[http.middlewares]
+  [http.middlewares.auth.forwardAuth]
+    address = "http://auth.service.consul:4181"
+    authResponseHeaders = ["X-Forwarded-User"]
+    trustForwardHeader = true
+
+[http.services]
+  [http.services.pfsense.loadBalancer]
+    [[http.services.pfsense.loadBalancer.servers]]
+      url = "https://172.16.10.1"
+
+  [http.services.pbs.loadBalancer]
+    [[http.services.pbs.loadBalancer.servers]]
+      url = "https://172.16.20.200:8007"
+
+  [http.services.pmx.loadBalancer.sticky.cookie]
+    [[http.services.pmx.loadBalancer.servers]]
+      url = "https://172.16.20.201:8006/"
+    [[http.services.pmx.loadBalancer.servers]]
+      url = "https://172.16.20.202:8006/"
+    [[http.services.pmx.loadBalancer.servers]]
+      url = "https://172.16.20.203:8006/"
+
+  [http.services.nomad.loadBalancer.sticky.cookie]
+    [[http.services.nomad.loadBalancer.servers]]
+      url = "http://clarkson.bakos.lan:4646"
+    [[http.services.nomad.loadBalancer.servers]]
+      url = "http://logan.bakos.lan:4646"
+    [[http.services.nomad.loadBalancer.servers]]
+      url = "http://speer.bakos.lan:4646"
+
+  [http.services.consul.loadBalancer.sticky.cookie]
+    [[http.services.consul.loadBalancer.servers]]
+      url = "http://clarkson.bakos.lan:8500"
+    [[http.services.consul.loadBalancer.servers]]
+      url = "http://logan.bakos.lan:8500"
+    [[http.services.consul.loadBalancer.servers]]
+      url = "http://speer.bakos.lan:8500"
