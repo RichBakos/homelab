@@ -8,19 +8,19 @@ job "traefik" {
       port "http"     { static = "80"   }
       port "https"    { static = "443"  }
       port "admin"    { static = "8080" }
-      port "postgres" { static = "5432"}     
+      port "postgres" { static = "5432" }     
     } 
   
-    volume traefik {
+    volume traefik_certs {
       type = "host"
-      source = "traefik"
+      source = "traefik_certs"
     }
 
     service {
       name = "traefik"
       port = "http"
       tags = [
-        "traefik.enable=true",				
+        "traefik.enable=true",		
         "traefik.http.routers.api.service=api@internal",
         "traefik.http.services.dummy.loadbalancer.server.port=9000",
         "traefik.http.routers.api.middlewares=auth",
@@ -40,29 +40,43 @@ job "traefik" {
         image = "traefik:2.11.2"
         ports = ["http", "https", "postgres"]
         network_mode = "host" 
+        volumes = [
+          "local/traefik.yaml:/etc/traefik/traefik.yaml",
+          "local/certs.yaml:/etc/traefik/common/certs.yaml",
+          "local/external.yaml:/etc/traefik/common/external.yaml"
+        ]        
       }       
       
       volume_mount {
-        volume = "traefik"
-        destination = "/etc/traefik"
+        volume = "traefik_certs"
+        destination = "/etc/certs"
       }    
 
       resources {
         cpu    =  500
         memory = 512
-      }            
+      }              
 
       template {
-        env = true
-        destination = "secrets/traefik.env"
-        data = <<EOF
-{{- with nomadVar "nomad/jobs/traefik" }}
-{{- range .Tuples }}
-{{ .K }}={{ .V }}
-{{- end }}
-{{- end }}
+        destination = "local/traefik.yaml"
+        data        = <<EOF
+{{- key "homelab/traefik/traefik.yaml" }}
 EOF
-      }       
+      }
+
+      template {
+        destination = "local/certs.yaml"
+        data        = <<EOF
+{{- key "homelab/traefik/certs.yaml" }}
+EOF
+      }
+
+      template {
+        destination = "local/external.yaml"
+        data        = <<EOF
+{{- key "homelab/traefik/external.yaml" }}
+EOF
+      }         
 		}
 	}
 }		

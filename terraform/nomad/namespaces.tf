@@ -26,7 +26,7 @@ resource "nomad_namespace" "security" {
 
 resource "nomad_namespace" "productivity" {
   name        = "productivity"
-  description = "The namespace for jobs that provide productivity functionality"
+  description = "The namespace for jobs that provide productivity tools"
 }
 
 resource "nomad_namespace" "media" {

@@ -1,99 +1,38 @@
 http:
   routers:
-    pfsense:
-      service: pfsense
-      rule: Host(`pfsense.bakos.me`)
-      entrypoints:
-        - websecure
-      middlewares:
-        - auth
-
-    pbs:
-      service: pbs
-      rule: Host(`pbs.bakos.me`)
-      entrypoints:
-        - websecure
-      middlewares:
-        - auth
-
-    pmx:
-      service: pmx
-      rule: Host(`pmx.bakos.me`)
-      entrypoints:
-        - websecure
-      middlewares:
-        - auth                
-
     nomad:
       service: nomad
       rule: Host(`nomad.bakos.me`)
       entrypoints:
         - websecure
-      middlewares:
-        - auth
 
     consul:
       service: consul
       rule: Host(`consul.bakos.me`)
       entrypoints:
         - websecure
-      middlewares:
-        - auth        
 
-    pfsense:
-      service: pfsense
-      rule: Host(`pfsense.bakos.me`)
-      entrypoints:
-        - websecure
-      middlewares:
-        - auth
-
-  middleswares:
+  middlewares:
     auth:
       forwardAuth:
-        address: "http://auth.service.consul:4181"
-        authResponseHeaders: ["X-Forwarded-User"]
+        address: http://auth.service.consul:4181
+        authResponseHeaders:
+          - X-Forwarded-User
         trustForwardHeader: true
 
-  services:
-    pfsense:
-      loadBalancer:
-        servers:
-          - url: "https://172.16.10.1"
-
-  services:
-    pbs:
-      loadBalancer:
-        servers:
-          - url: "https://172.16.20.200:8007"
-
-  services:
-    pmx:
-      loadBalancer:
-        sticky:
-          cookie: {}
-        servers:
-          - url: "https://172.16.20.201:8006/"
-          - url: "https://172.16.20.202:8006/"
-          - url: "https://172.16.20.203:8006/"
-
-  services:
+  servcices:
     nomad:
-      loadBalancer:
-        sticky:
-          cookie: {}
+      loadbalancer:
         servers:
-          - url: "http://clarkson.bakos.lan:4646"
-          - url: "http://logan.bakos.lan:4646"
-          - url: "http://speer.bakos.lan:4646"
+          - url: http://clarkson.bakos.me:4646
+          - url: http://logan.bakos.me:4646
+          - url: http://speer.bakos.me:4646                    
+      middlewares: auth
 
-  services:
     consul:
-      loadBalancer:
-        sticky:
-          cookie: {}
+      loadbalancer:
         servers:
-          - url: "http://clarkson.bakos.lan:8500"
-          - url: "http://logan.bakos.lan:8500"
-          - url: "http://speer.bakos.lan:8500"                  
-          
+          - url: http://clarkson.bakos.me:8500
+          - url: http://logan.bakos.me:8500
+          - url: http://speer.bakos.me:8500
+      middlewares: auth

@@ -1,6 +1,2 @@
-*.bak
 *.tfvars
-.vscode
-traefik.toml
-rules.toml
-acme.json
+external.yaml

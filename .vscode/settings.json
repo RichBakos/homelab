@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		"*.job": "hcl"
+	},
+	"editor.fontSize": 16
+}

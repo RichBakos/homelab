@@ -29,8 +29,9 @@ resource "consul_key_prefix" "prometheus" {
 resource "consul_key_prefix" "traefik" { 
   path_prefix = "homelab/traefik/"
   subkeys = {
-    "traefik.toml"  = file("${path.module}/files/traefik/traefik.toml"),
-    "external.toml" = file("${path.module}/files/traefik/external.toml"),
+    "traefik.yaml"  = file("${path.module}/files/traefik/traefik.yaml"),
+    "certs.yaml"    = file("${path.module}/files/traefik/certs.yaml"),
+    "external.yaml" = file("${path.module}/files/traefik/external.yaml"),
   }
 }
 

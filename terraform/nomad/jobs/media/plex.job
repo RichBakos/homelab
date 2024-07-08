@@ -22,7 +22,8 @@ job "plex" {
       name = "plex"
       port = "http"
       tags = [
-        "traefik.enable=true",				
+        "traefik.enable=true",	
+        "traefik.http.routers.plex.rule=Host(`plex.bakos.me`)",
         "traefik.http.routers.plex.middlewares=auth"
       ]
 

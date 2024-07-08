@@ -90,8 +90,8 @@ client {
     read_only = false
   }
 
-  host_volume "traefik" {
-    path      = "/mnt/data/volumes/traefik"
+  host_volume "traefik_certs" {
+    path      = "/mnt/data/volumes/traefik_certs"
     read_only = false
   }
 

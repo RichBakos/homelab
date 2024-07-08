@@ -1,22 +1,22 @@
 
-consul_token
-nomad_url
-consul_url
-auth_domain
-auth_client_id
-auth_client_secret
-auth_secret
-auth_whitelist_email
-postgres_root_user
-postgres_root_password
-gf_security_admin_user
-gf_security_admin_password
-samba_password
-samba_share
-samba_uid
-cf_api_email
-cf_api_key
-mongo_user
-mongo_pass
-influxdb_user
-influxdb_password
+consul_token =
+nomad_url =
+consul_url =
+auth_domain =
+auth_client_id =
+auth_client_secret =
+auth_secret =
+auth_whitelist_email =
+postgres_root_user =
+postgres_root_password =
+gf_security_admin_user =
+gf_security_admin_password =
+samba_password =
+samba_share =
+samba_uid =
+cf_api_email =
+cf_api_key =
+mongo_user =
+mongo_pass =
+influxdb_user =
+influxdb_password =

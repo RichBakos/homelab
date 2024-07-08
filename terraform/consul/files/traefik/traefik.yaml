@@ -1,40 +1,8 @@
 global:
-  checkNewVersion: true
   sendAnonymousUsage: false
 
 serversTransport:
   insecureSkipVerify: true
-
-entryPoints:
-  web:
-    address: :80
-    web:
-      redirections:
-        entrypoint:
-          to: websecure
-          scheme: https
-          permanent: true
-
-  websecure:
-    address: :443
-    websecure:
-      http:
-        tls:
-        certResolver: cloudflare
-        domains:
-          - main: bakos.me
-          - sans: [*.bakos.me]
-
-providers:
-  file:
-    directory: /etc/traefik/dynamic
-    watch: true
-
-  consulCatalog:
-    exposedByDefault: false
-    endpoint:
-      address: 127.0.0.1:8500
-      datacenter: dc1
 
 api:
   insecure: false
@@ -48,17 +16,44 @@ log:
 accessLog:
   format: json
   filters:
-    statusCodes: ["200", "300-302", "400-404"]
-    retryAttempts: true
-    minDuration: 10ms
+    statusCodes:
+      - 200
+      - 300-302
+      - 400-404
 
-certificatesResolvers:
-  cloudflare:
-    acme:
-      email: ${email}
-      caServer: https://acme-v02.api.letsencrypt.org/directory
-      storage: /etc/traefik/acme.json
-      dnsChallenge:
-        provider: cloudflare
-        delayBeforeCheck: 10s
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+    proxyProtocol:
+      trustedIPs:
+        - 172.16.30.1/32
+        - 192.168.30.1/32
 
+  websecure:
+    address: :443
+    http:
+      tls: true
+    proxyProtocol:
+      trustedIPs:
+        - 172.16.30.1/32
+        - 192.168.30.1/32
+
+  postgres:
+    address: :5432
+
+providers:
+  file:
+    directory: /etc/traefik/common
+    watch: true
+
+  consulCatalog:
+    exposedByDefault: false
+    defaultRule: Host(`{{ normalize .Name }}.bakos.me`)
+    endpoint:
+      address: 127.0.0.1:8500
