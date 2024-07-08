@@ -1,0 +1,38 @@
+http:
+  routers:
+    nomad:
+      service: nomad
+      rule: Host(`nomad.bakos.me`)
+      entrypoints:
+        - websecure
+
+    consul:
+      service: consul
+      rule: Host(`consul.bakos.me`)
+      entrypoints:
+        - websecure
+
+  middlewares:
+    auth:
+      forwardAuth:
+        address: http://auth.service.consul:4181
+        authResponseHeaders:
+          - X-Forwarded-User
+        trustForwardHeader: true
+
+  servcices:
+    nomad:
+      loadbalancer:
+        servers:
+          - url: http://clarkson.bakos.me:4646
+          - url: http://logan.bakos.me:4646
+          - url: http://speer.bakos.me:4646                    
+      middlewares: auth
+
+    consul:
+      loadbalancer:
+        servers:
+          - url: http://clarkson.bakos.me:8500
+          - url: http://logan.bakos.me:8500
+          - url: http://speer.bakos.me:8500
+      middlewares: auth

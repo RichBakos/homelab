@@ -1,8 +1,2 @@
-.envrc
-.env
-.bak
-.txt
-traefik.toml
-rules.toml
-env.vars.hcl
-global.env.vars.hcl
+*.tfvars
+external.yaml

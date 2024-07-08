@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-export NOMAD_ADDR=
-export NOMAD_VAR_tld=
-export NOMAD_VAR_media=
-export NOMAD_VAR_services=

@@ -1,0 +1,82 @@
+job "traefik" {
+  type      = "system"
+  namespace = "networking"
+  
+  group "traefik" {
+
+    network {
+      port "http"     { static = "80"   }
+      port "https"    { static = "443"  }
+      port "admin"    { static = "8080" }
+      port "postgres" { static = "5432" }     
+    } 
+  
+    volume traefik_certs {
+      type = "host"
+      source = "traefik_certs"
+    }
+
+    service {
+      name = "traefik"
+      port = "http"
+      tags = [
+        "traefik.enable=true",		
+        "traefik.http.routers.api.service=api@internal",
+        "traefik.http.services.dummy.loadbalancer.server.port=9000",
+        "traefik.http.routers.api.middlewares=auth",
+      ]
+
+      check {
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "30s"
+      }
+    }   
+
+    task "traefik" {
+      driver = "docker"
+
+      config {
+        image = "traefik:2.11.2"
+        ports = ["http", "https", "postgres"]
+        network_mode = "host" 
+        volumes = [
+          "local/traefik.yaml:/etc/traefik/traefik.yaml",
+          "local/certs.yaml:/etc/traefik/common/certs.yaml",
+          "local/external.yaml:/etc/traefik/common/external.yaml"
+        ]        
+      }       
+      
+      volume_mount {
+        volume = "traefik_certs"
+        destination = "/etc/certs"
+      }    
+
+      resources {
+        cpu    =  500
+        memory = 512
+      }              
+
+      template {
+        destination = "local/traefik.yaml"
+        data        = <<EOF
+{{- key "homelab/traefik/traefik.yaml" }}
+EOF
+      }
+
+      template {
+        destination = "local/certs.yaml"
+        data        = <<EOF
+{{- key "homelab/traefik/certs.yaml" }}
+EOF
+      }
+
+      template {
+        destination = "local/external.yaml"
+        data        = <<EOF
+{{- key "homelab/traefik/external.yaml" }}
+EOF
+      }         
+		}
+	}
+}		
