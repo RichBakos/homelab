@@ -44,18 +44,6 @@ variable "gf_security_admin_password" {
   description = "The password used by the grafana admin"
 }
 
-###--- Traefik vars ---###
-
-variable "cf_api_email" {
-  type        = string
-  description = "The email for the cloudflare account"
-}
-
-variable "cf_api_key" {
-  type        = string
-  description = "The API key for the cloudflare account"
-}
-
 variable "postgres_root_user" {
   type        = string
   description = "The root user for postgres"

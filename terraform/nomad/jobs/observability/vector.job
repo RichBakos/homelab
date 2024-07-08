@@ -42,7 +42,7 @@ job "vector" {
 
       env {
         VECTOR_CONFIG = "local/vector.toml"
-        VECTOR_REQUIRE_HEALTHY = "true"
+        VECTOR_REQUIRE_HEALTHY = "false"
       }    	
 
       template {

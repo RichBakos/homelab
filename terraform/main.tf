@@ -18,9 +18,7 @@ module "nomad" {
   gf_security_admin_password  = var.gf_security_admin_password
   samba_password              = var.samba_password
   samba_share                 = var.samba_share 
-  samba_uid                   = var.samba_uid  
-  cf_api_email                = var.cf_api_email  
-  cf_api_key                  = var.cf_api_key  
+  samba_uid                   = var.samba_uid   
   mongo_user                  = var.mongo_user  
   mongo_pass                  = var.mongo_pass 
   influxdb_user               = var.influxdb_user
@@ -36,4 +34,28 @@ module "consul" {
 
 }
 
+module "grafana" {
+  source   = "./grafana"
+  url      = var.gf_url
+  email    = var.gf_security_admin_user
+  password = var.gf_security_admin_password
+}
+
+module "prowlarr" {
+  source  = "./prowlarr"
+  url     = var.prowlarr_url
+  api_key = var.prowlarr_api 
+}
+
+module "radarr" {
+  source  = "./radarr"
+  url     = var.radarr_url
+  api_key = var.radarr_api   
+}
+
+module "sonarr" {
+  source  = "./sonarr"
+  url     = var.sonarr_url
+  api_key = var.sonarr_api 
+}
 
