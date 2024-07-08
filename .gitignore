@@ -1,3 +1,4 @@
 .gitignore
-.terraform
 *.tfvars
+.terraform.lock.hcl
+.terraform/
