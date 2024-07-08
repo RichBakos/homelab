@@ -1,4 +1,6 @@
 .*
+.gitignore
+.terraform
 *.tfvars
 .gitignore
 .terraform
