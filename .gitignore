@@ -1,3 +1,2 @@
-.gitignore
+.*
 *.tfvars
-external.yaml
