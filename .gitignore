@@ -1,4 +1,3 @@
 .gitignore
 *.tfvars
-.terraform.lock.hcl
-.terraform/
+external.yaml
