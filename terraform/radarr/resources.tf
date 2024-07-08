@@ -31,12 +31,12 @@ resource "radarr_host" "radarr" {
 }
 
 resource "radarr_download_client_transmission" "example" {
-  enable   									 = true
-  priority 									 = 1
-  name     									 = "Transmission"
-  host     									 = "transmission.service.consul"
-  url_base                   = "/transmission/" 
-  port     									 = 9091
+  enable		= true
+  priority	= 1
+  name			= "Transmission"
+  host			= "transmission.service.consul"
+  url_base	= "/transmission/" 
+  port			= 9091
 }
 
 # data "radarr_remote_path_mapping" "mapping" {
