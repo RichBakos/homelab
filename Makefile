@@ -14,8 +14,7 @@ apply:
 	cd terraform && terraform apply --auto-approve
 
 format:
-	cd terraform && terraform fmt -recursive -check
-nomad-validate:
+	cd terraform && terraform fmt -recursive -checknomad-validate:
 	./scripts/validate-jobs.sh
 
 init:
