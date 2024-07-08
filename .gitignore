@@ -1,4 +1,6 @@
 .*
+.gitignore
+.terraform
 *.tfvars
 .tfstate
 .vscode
