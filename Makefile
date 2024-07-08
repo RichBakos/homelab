@@ -2,16 +2,16 @@ nomad-validate:
 	./scripts/validate-jobs.sh
 
 init:
-	terraform init
+	cd terraform && terraform init
 
 init-upgrade:
-	terraform init -upgrade
+	cd terraform && terraform init -upgrade
 
 plan:
-	terraform plan
+	cd terraform && terraform plan
 
 apply:
-	terraform apply
+	cd terraform && terraform apply
 
 format:
-	terraform fmt -recursive -check
+	cd terraform && terraform fmt -recursive -check

@@ -106,16 +106,3 @@ resource "nomad_job" "journalctl_cleanup" {
 resource "nomad_job" "nomad_cleanup" {
   jobspec = file("${path.module}/jobs/maintenance/nomad-cleanup.job")
 }
-
-
-# resource "nomad_job" "csi-controller" {
-#   jobspec = file("${path.module}/jobs/storage/csi-controller.job")
-# }
-
-# resource "nomad_job" "csi_node" {
-#   jobspec = file("${path.module}/jobs/storage/csi-node.job")
-# }
-
-# resource "nomad_job" "telegraf" {
-#   jobspec = file("${path.module}/jobs/observability/telegraf.job")
-# }

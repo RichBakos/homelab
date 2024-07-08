@@ -54,16 +54,9 @@ variable "gf_security_admin_password" {
   description = "The password used by the grafana admin"
 }
 
-###--- Traefik vars ---###
-
-variable "cf_api_email" {
+variable "gf_url" {
   type        = string
-  description = "The email for the cloudflare account"
-}
-
-variable "cf_api_key" {
-  type        = string
-  description = "The API key for the cloudflare account"
+  description = "The URL of the grafana instance"
 }
 
 variable "postgres_root_user" {
@@ -86,6 +79,42 @@ variable "influxdb_password" {
 variable "influxdb_user" {
   type        = string
   description = "The root user for postgres"
+}
+
+###--- Prowlarr vars ---###
+
+variable "prowlarr_url" {
+  type        = string
+  description = "The URL of the prowlarr instance"
+}
+
+variable "prowlarr_api" {
+  type        = string
+  description = "The API for prowlarr"
+}
+
+###--- Radarr vars ---###
+
+variable "radarr_url" {
+  type        = string
+  description = "The URL of the radarr instance"
+}
+
+variable "radarr_api" {
+  type        = string
+  description = "The API for the radarr instance"
+}
+
+###--- Sonarr vars ---###
+
+variable "sonarr_url" {
+  type        = string
+  description = "The URL of the sonarr instance"
+}
+
+variable "sonarr_api" {
+  type        = string
+  description = "The API for the sonarr instance"
 }
 
 ###--- Samba vars ---###

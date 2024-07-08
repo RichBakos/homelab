@@ -58,15 +58,6 @@ resource "nomad_variable" "samba" {
   }
 }
 
-resource "nomad_variable" "traefik" {
-  namespace = nomad_namespace.networking.name  
-  path      = "nomad/jobs/traefik"
-  items = {
-		CF_API_EMAIL	= var.cf_api_email 
-		CF_API_KEY		= var.cf_api_key
-  }
-}
-
 resource "nomad_variable" "unifi" {
   namespace = nomad_namespace.networking.name  
   path      = "nomad/jobs/unifi"

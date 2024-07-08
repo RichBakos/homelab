@@ -10,6 +10,11 @@ client {
     read_only = false
   }
 
+  host_volume "docker-sock-ro" {
+    path = "/var/run/docker.sock"
+    read_only = true
+  }  
+
   host_volume "flaresolverr" {
     path      = "/mnt/data/volumes/flaresolverr"
     read_only = false
@@ -114,5 +119,4 @@ client {
     path      = "/mnt/data/volumes/wikijs"
     read_only = false
   }	
-
 }
