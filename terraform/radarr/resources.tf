@@ -46,16 +46,16 @@ resource "radarr_download_client_transmission" "example" {
 # }
 
 resource "radarr_notification_plex" "plex" {
-  on_download                      	= true
-  on_upgrade                       	= true
-  on_rename                        	= false
-  on_movie_added                   	= false
-  on_movie_delete                  	= false
-  on_movie_file_delete             	= false
-  on_movie_file_delete_for_upgrade 	= true
-  include_health_warnings 					= false
-  name                    					= "Plex Media Server"
-  host       												= "plex.service.consul"
-  port       												= 32400
-  auth_token 												= "_JhJhPu8AXa8UsXzXsfw"
+  on_download												= true
+  on_upgrade												= true
+  on_rename													= false
+  on_movie_added										= false
+  on_movie_delete										= false
+  on_movie_file_delete							= false
+  on_movie_file_delete_for_upgrade	= true
+  include_health_warnings						= false
+  name															= "Plex Media Server"
+  host															= "plex.service.consul"
+  port															= 32400
+  auth_token												= "_JhJhPu8AXa8UsXzXsfw"
 }
