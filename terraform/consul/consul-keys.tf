@@ -5,6 +5,17 @@ resource "consul_key_prefix" "coredns" {
   }
 }
 
+resource "consul_key_prefix" "hass" {
+  path_prefix = "homelab/hass/"
+  subkeys = {
+    "automations.yaml"      = file("${path.module}/files/hass/automations.yaml")
+    "configuration.yaml"    = file("${path.module}/files/hass/configuration.yaml")
+    "covers.yaml"           = file("${path.module}/files/hass/covers.yaml")
+    "customize.yaml"        = file("${path.module}/files/hass/customize.yaml")
+    "lights.yaml"           = file("${path.module}/files/hass/lights.yaml") 
+  }
+}
+
 resource "consul_key_prefix" "keepalived" {
   path_prefix = "homelab/keepalived/"
   subkeys = {
