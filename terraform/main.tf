@@ -50,7 +50,8 @@ module "prowlarr" {
 module "radarr" {
   source  = "./radarr"
   url     = var.radarr_url
-  api_key = var.radarr_api   
+  api_key = var.radarr_api  
+  auth_token = var.plex_auth_token   
 }
 
 module "sonarr" {
