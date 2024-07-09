@@ -25,4 +25,4 @@ Here are the workloads I run:
 
 ## Storage
 
-I'm currently using host volumes. I don't see the benefit of CSI for me this time. I have [Gluster](https://www.gluster.org) backed by [ZFS](https://en.wikipedia.org/wiki/ZFS#:~:text=ZFS%20(previously%20Zettabyte%20File%20System,Solaris%20operating%20system%20in%202001.) on my Proxmox cluster, so host volumes make sense. It's fast, it's easy, it's error free.
+I'm currently using host volumes. I don't see the benefit of CSI for me this time. I have [Gluster](https://www.gluster.org) backed by ZFS on my Proxmox cluster, so host volumes make sense. It's fast, it's easy, it's error free.
