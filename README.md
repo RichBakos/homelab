@@ -2,7 +2,7 @@
 
 This repository contains the configuration of my homelab. It leverages [Nomad](https://nomadproject.io), [Consul](https://www.consul.io/), and [Packer](https://packer.io). Over time I've evolved my lab from FreeBSD jails -> LXC -> Docker -> and finally (IaC). I'm using [Terraform](https://www.terraform.io) to manage the state of my homelab.
 
-I'm running a 3 node [ProxMox](https://www.proxmox.com/en/) cluster across these low power (Xeon-D ) [SuperMicro SuperServers](https://supermicro.com/en/products/system/midtower/5028/sys-5028d-tn4t.cfm). 
+I'm running a 3 node [Proxmox](https://www.proxmox.com/en/) cluster across these low power (Xeon-D ) [SuperMicro SuperServers](https://supermicro.com/en/products/system/midtower/5028/sys-5028d-tn4t.cfm). 
 
 ## Workloads
 
@@ -18,11 +18,11 @@ Here are the workloads I run:
 * [Loki](https://grafana.com/oss/loki/) - Logs (because metrics aren't useful, not for me anyway).
 * [Grafana](https://grafana.com) - Because we must have pretty dashboards.
 * [Postgres](https://postgresql.org/) - I have years of data stored here from a variety of sources .
-* [MongoDB](https://mongodb.com/) - This is the backend for my [unifi](https://www.ui.com) deployment.
+* [MongoDB](https://mongodb.com/) - This is the backend for my [Unifi](https://www.ui.com) deployment.
 * ...
 * ...
 * You can see the full list [here](terraform/nomad/jobs)
 
 ## Storage
 
-I'm currently using host volumes. I don't see the benefit of CSI for me this time. I have [Gluster](https://www.gluster.org) backed by ZFS on my ProxMox cluster, so host volumes make sense. It's fast, it's easy, it's error free.
+I'm currently using host volumes. I don't see the benefit of CSI for me this time. I have [Gluster](https://www.gluster.org) backed by [ZFS](https://en.wikipedia.org/wiki/ZFS#:~:text=ZFS%20(previously%20Zettabyte%20File%20System,Solaris%20operating%20system%20in%202001.) on my Proxmox cluster, so host volumes make sense. It's fast, it's easy, it's error free.
