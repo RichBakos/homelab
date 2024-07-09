@@ -8,6 +8,6 @@ terraform {
 }
 
 provider "radarr" {
-  url     = var.url
+  url = var.url
   api_key = var.api_key
 }

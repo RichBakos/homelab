@@ -134,8 +134,6 @@ variable "samba_uid" {
   description = "The UID for the samba user"
 }
 
-###--- Unifi vars ---###
-
 variable "mongo_pass" {
   type        = string
   description = "The mongo password for the Unifi db"
@@ -144,4 +142,9 @@ variable "mongo_pass" {
 variable "mongo_user" {
   type        = string
   description = "The mongo user for the unifi db"
+}
+
+variable "plex_auth_token" {
+  type        = string
+  description = "The API of the plex instance"
 }
