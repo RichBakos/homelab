@@ -1,6 +1,0 @@
-tls:
-  certificates:
-    - certFile: "/etc/certs/LetsEncrypt.crt"
-      keyFile: "/etc/certs/LetsEncrypt.key"
-      stores: 
-        - default

@@ -1,3 +1,13 @@
+tls:
+  certificates:
+    - certFile: "/etc/traefik/certs/LetsEncrypt.crt"
+      keyFile: "/etc/traefik/certs/LetsEncrypt.key"
+  stores:
+    default:
+      defaultCertificate:        
+        certFile: "/etc/traefik/certs/LetsEncrypt.crt"
+        keyFile: "/etc/traefik/certs/LetsEncrypt.key"        
+
 http:
   routers:
     nomad:
@@ -14,7 +24,7 @@ http:
       entrypoints:
         - websecure
       middlewares:
-        - forwad-auth   
+        - auth   
 
     pfsense:
       service: pfsense
@@ -39,7 +49,7 @@ http:
         - websecure
       middlewares:
         - auth   
-        
+
   middlewares:
     auth:
       forwardAuth:
@@ -52,16 +62,12 @@ http:
     nomad:
       loadbalancer:
         servers:
-          - url: http://clarkson.bakos.me:4646
-          - url: http://logan.bakos.me:4646
-          - url: http://speer.bakos.me:4646                    
+          - url: http://clarkson.bakos.lan:4646                 
 
     consul:
       loadbalancer:
         servers:
-          - url: http://clarkson.bakos.me:8500
-          - url: http://logan.bakos.me:8500
-          - url: http://speer.bakos.me:8500
+          - url: http://clarkson.bakos.lan:8500
 
     pfsense:
       loadbalancer:
@@ -72,11 +78,9 @@ http:
       loadbalancer:
         servers:
           - url: https://172.16.20.201:8006
-          - url: https://172.16.20.202:8006
-          - url: https://172.16.20.203:8006
 
     pve-backup:
       loadbalancer:
         servers:
           - url: https://172.16.20.200:8007
-           
+                    
