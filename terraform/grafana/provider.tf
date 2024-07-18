@@ -8,6 +8,6 @@ terraform {
 }
 
 provider "grafana" {
-  url  = "gf_url"
-  auth = "${var.grafana_email}:${var.grafana_password}"
+  url  = var.url
+  auth = "${var.email}:${var.password}"
 }

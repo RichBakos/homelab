@@ -24,8 +24,8 @@ job "plex" {
       tags = [
         "traefik.enable=true",	
         "traefik.http.routers.plex.entrypoints=websecure",                      
-        "traefik.http.routers.plex.middlewares=auth"
-      ]
+        "traefik.http.routers.plex.middlewares=auth",   
+      ]        
 
       check {
         type     = "tcp"
@@ -56,7 +56,7 @@ job "plex" {
       env {
         PLEX_UID="1010"
         PLEX_GID="1010"
-        PLEX_CLAIM="claim-54QWese6myQv1zCUQZu9"
+        PLEX_CLAIM="claim-E5KyTseyzZhzHubkYJ4b"
       }   
 
       resources {

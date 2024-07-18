@@ -11,7 +11,7 @@ plan:
 	cd terraform && terraform plan
 
 apply:
-	cd terraform && terraform apply --auto-approve
+	terraform apply
 
 format:
 	cd terraform && terraform fmt -recursive -check

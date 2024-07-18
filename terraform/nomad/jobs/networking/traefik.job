@@ -11,6 +11,11 @@ job "traefik" {
       port "postgres" { static = "5432" }     
     } 
 
+    volume traefik_certs {
+      type = "host"
+      source = "traefik_certs"
+    }    
+
     service {
       name = "traefik"
       port = "http"
@@ -19,7 +24,7 @@ job "traefik" {
         "traefik.http.routers.api.entrypoints=websecure",               		
         "traefik.http.routers.api.service=api@internal",
         "traefik.http.services.dummy.loadbalancer.server.port=9000",
-#        "traefik.http.routers.api.middlewares=auth",
+        "traefik.http.routers.api.middlewares=auth",
       ]
 
       check {
@@ -38,10 +43,14 @@ job "traefik" {
         ports = ["http", "https", "postgres"]
         volumes = [
           "local/traefik.yaml:/etc/traefik/traefik.yaml",
-          "local/certs.yaml:/etc/traefik/certs/certs.yaml",
-          "local/external.yaml:/etc/traefik/common/external.yaml"
+          "local/dynamic.yaml:/etc/traefik/dynamic/dynamic.yaml"
         ]        
-      }        
+      }   
+
+      volume_mount {
+        volume = "traefik_certs"
+        destination = "/etc/traefik/certs"
+      }              
 
       resources {
         cpu    =  500
@@ -56,16 +65,9 @@ EOF
       }
 
       template {
-        destination = "local/certs.yaml"
+        destination = "local/dynamic.yaml"
         data        = <<EOF
-{{- key "homelab/traefik/certs.yaml" }}
-EOF
-      }
-
-      template {
-        destination = "local/external.yaml"
-        data        = <<EOF
-{{- key "homelab/traefik/external.yaml" }}
+{{- key "homelab/traefik/dynamic.yaml" }}
 EOF
       }         
 		}
