@@ -11,7 +11,8 @@ job "prometheus" {
       name = "prometheus"
       port = "http"
       tags = [
-        "traefik.enable=true",				
+        "traefik.enable=true",   
+ #       "traefik.http.routers.prometheus.entrypoints=websecure",             				
         "traefik.http.routers.prometheus.middlewares=auth"
       ]
       check {

@@ -5,13 +5,41 @@ http:
       rule: Host(`nomad.bakos.me`)
       entrypoints:
         - websecure
+      middlewares:
+        - auth         
 
     consul:
       service: consul
       rule: Host(`consul.bakos.me`)
       entrypoints:
         - websecure
+      middlewares:
+        - forwad-auth   
 
+    pfsense:
+      service: pfsense
+      rule: Host(`pfsense.bakos.me`)
+      entrypoints:
+        - websecure
+      middlewares:
+        - auth   
+
+    pve:
+      service: pve
+      rule: Host(`pve.bakos.me`)
+      entrypoints:
+        - websecure
+      middlewares:
+        - auth   
+
+    pve-backup:
+      service: pve-backup
+      rule: Host(`pve-backup.bakos.me`)
+      entrypoints:
+        - websecure
+      middlewares:
+        - auth   
+        
   middlewares:
     auth:
       forwardAuth:
@@ -20,14 +48,13 @@ http:
           - X-Forwarded-User
         trustForwardHeader: true
 
-  servcices:
+  services:
     nomad:
       loadbalancer:
         servers:
           - url: http://clarkson.bakos.me:4646
           - url: http://logan.bakos.me:4646
           - url: http://speer.bakos.me:4646                    
-      middlewares: auth
 
     consul:
       loadbalancer:
@@ -35,4 +62,21 @@ http:
           - url: http://clarkson.bakos.me:8500
           - url: http://logan.bakos.me:8500
           - url: http://speer.bakos.me:8500
-      middlewares: auth
+
+    pfsense:
+      loadbalancer:
+        servers:
+          - url: https://172.16.10.1:8443
+    
+    pve:
+      loadbalancer:
+        servers:
+          - url: https://172.16.20.201:8006
+          - url: https://172.16.20.202:8006
+          - url: https://172.16.20.203:8006
+
+    pve-backup:
+      loadbalancer:
+        servers:
+          - url: https://172.16.20.200:8007
+           

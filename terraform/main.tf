@@ -14,8 +14,8 @@ module "nomad" {
   auth_client_secret          = var.auth_client_secret 
   auth_secret                 = var.auth_secret 
   auth_whitelist_email        = var.auth_whitelist_email 
-  gf_security_admin_user      = var.gf_security_admin_user
-  gf_security_admin_password  = var.gf_security_admin_password
+  grafana_email               = var.grafana_email
+  grafana_password            = var.grafana_password
   samba_password              = var.samba_password
   samba_share                 = var.samba_share 
   samba_uid                   = var.samba_uid   
@@ -36,9 +36,9 @@ module "consul" {
 
 module "grafana" {
   source   = "./grafana"
-  url      = var.gf_url
-  email    = var.gf_security_admin_user
-  password = var.gf_security_admin_password
+  url      = var.grafana_url
+  email    = var.grafana_email
+  password = var.grafana_password
 }
 
 module "prowlarr" {

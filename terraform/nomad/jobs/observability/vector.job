@@ -29,6 +29,7 @@ job "vector" {
       driver = "docker"
       config {
         image = "timberio/vector:0.14.X-alpine"
+        network_mode = "host"        
         ports = ["api"]
       }
 

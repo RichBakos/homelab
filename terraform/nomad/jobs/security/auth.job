@@ -12,7 +12,8 @@ job "auth" {
       name = "auth"      
       port = "http"
       tags = [
-        "traefik.enable=true",
+        "traefik.enable=true",  
+        "traefik.http.routers.auth.entrypoints=websecure",                                
         "traefik.http.middlewares.auth.forwardauth.address=http://auth.service.consul:4181/",
         "traefik.http.middlewares.auth.forwardauth.trustForwardHeader=true",
         "traefik.http.middlewares.auth.forwardauth.authResponseHeaders=X-Forwarded-User",
@@ -31,6 +32,7 @@ job "auth" {
 
       config {
         image = "thomseddon/traefik-forward-auth:2.2.0"
+        network_mode = "host"
         ports = ["http"]
       }
 

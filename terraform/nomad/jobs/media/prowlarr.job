@@ -22,7 +22,8 @@ job "prowlarr" {
       name = "prowlarr"
       port = "http"
       tags = [
-        "traefik.enable=true",				
+        "traefik.enable=true", 
+        "traefik.http.routers.prowlarr.entrypoints=websecure",          		       
         "traefik.http.routers.prowlarr.middlewares=auth"
       ]
 
@@ -38,6 +39,7 @@ job "prowlarr" {
 
       config {
         image 	= "linuxserver/prowlarr"
+        network_mode = "host"          
         ports 	= ["http"]
       }
 

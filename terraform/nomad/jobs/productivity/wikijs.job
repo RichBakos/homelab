@@ -10,13 +10,19 @@ job "wikijs" {
     }
 
     volume "wikijs" {
-      type            = "host"
-      source          = "wikijs"
+      type = "host"
+      source = "wikijs"
     }      
 
     service {
       name = "wikijs"      
       port = "http"
+      tags = [
+        "traefik.enable=true",      
+        "traefik.http.routers.wikijs.entrypoints=websecure",           
+        "traefik.http.routers.wikijs.middlewares=auth",                
+      ] 
+
       check {
         type     = "tcp"
         interval = "10s"
@@ -29,6 +35,7 @@ job "wikijs" {
 			
       config {
         image = "linuxserver/wikijs"
+        network_mode = "host"        
         ports = ["http"]
       }
 

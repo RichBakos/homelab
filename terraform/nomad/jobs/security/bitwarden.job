@@ -18,7 +18,8 @@ job "bitwarden" {
       name = "bitwarden"
       port = "http"
       tags = [
-        "traefik.enable=true",		
+        "traefik.enable=true",	 
+        "traefik.http.routers.bitwarden.entrypoints=websecure",             	       
         "traefik.http.routers.bitwarden.middlewares=auth"
       ]
 
@@ -35,6 +36,7 @@ job "bitwarden" {
 
       config {
         image = "vaultwarden/server:1.25.2"
+        network_mode = "host"        
         ports = ["http"]
       }
 

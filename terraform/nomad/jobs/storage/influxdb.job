@@ -22,9 +22,8 @@ job "influxdb" {
       name = "influxdb"
       port = "http"
       tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.influxdb.rule=Host(`influxdb.bakos.me`)",
-        "traefik.http.routers.influxdb.entrypoints=websecure",					
+        "traefik.enable=true",		
+        "traefik.http.routers.influxbd.entrypoints=websecure",        			
         "traefik.http.routers.influxdb.middlewares=auth"				
       ]  
 

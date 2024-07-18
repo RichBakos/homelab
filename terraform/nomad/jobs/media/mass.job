@@ -17,7 +17,8 @@ job "mass" {
       name = "mass"
       port = "http"
       tags = [
-        "traefik.enable=true",				
+        "traefik.enable=true",	          
+        "traefik.http.routers.mass.entrypoints=websecure",    	
         "traefik.http.routers.mass.middlewares=auth"
       ]
 

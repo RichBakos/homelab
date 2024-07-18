@@ -22,7 +22,8 @@ job "sonarr" {
       name = "sonarr"
       port = "http"
       tags = [
-        "traefik.enable=true",			
+        "traefik.enable=true", 
+        "traefik.http.routers.sonarr.entrypoints=websecure",                       			        
         "traefik.http.routers.sonarr.middlewares=auth",
       ]
       

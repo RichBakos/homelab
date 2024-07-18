@@ -27,9 +27,9 @@ job "samba" {
       driver = "docker"
 
       config {
-        image = "servercontainers/samba:latest"
-        network_mode = "host"				
+        image = "servercontainers/samba:latest"		
         ports = ["smb"]
+        network_mode = "host"		        
       } 
       
       volume_mount {
@@ -46,7 +46,7 @@ job "samba" {
         env = true
         destination = "secrets/env"        
         data = <<EOF
-{{- with nomadVar "nomad/jobs/auth" }}
+{{- with nomadVar "nomad/jobs/forward-auth" }}
 {{- range .Tuples }}
 {{ .K }}={{ .V }}
 {{- end }}

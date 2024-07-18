@@ -5,7 +5,7 @@ resource "nomad_variable" "auth" {
     AUTH_HOST                       = "auth.${var.auth_domain}"
     COOKIE_DOMAIN                   = var.auth_domain
     INSECURE_COOKIE                 = "true"
-    LOG_LEVEL                       = "WARN"
+    LOG_LEVEL                       = "DEBUG"
 		PROVIDERS_GOOGLE_CLIENT_ID      = var.auth_client_id
 		PROVIDERS_GOOGLE_CLIENT_SECRET  = var.auth_client_secret
 		SECRET                          = var.auth_secret
@@ -18,8 +18,8 @@ resource "nomad_variable" "grafana" {
   path      = "nomad/jobs/grafana"
   items = {
 		GF_PATHS_DATA 							= "/var/lib/grafana"
-		GF_SECURITY_ADMIN_USER 		 	= var.gf_security_admin_user
-		GF_SECURITY_ADMIN_PASSWORD 	= var.gf_security_admin_password
+		GF_SECURITY_ADMIN_USER 		 	= var.grafana_email
+		GF_SECURITY_ADMIN_PASSWORD 	= var.grafana_password
 		GF_INSTALL_PLUGINS 					= "grafana-piechart-panel"
   }
 }
@@ -33,7 +33,6 @@ resource "nomad_variable" "influxdb" {
    	DOCKER_INFLUXDB_INIT_ORG      = "home"
    	DOCKER_INFLUXDB_INIT_PASSWORD = var.influxdb_password  
 		DOCKER_INFLUXDB_INIT_USERNAME = var.influxdb_user
-
   }
 }
 

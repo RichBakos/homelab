@@ -17,7 +17,8 @@ job "unifi" {
       name = "unifi"
       port = "http"
       tags = [
-        "traefik.enable=true",				
+        "traefik.enable=true",	   
+        "traefik.http.routers.unifi.entrypoints=websecure",                   			
         "traefik.http.services.unifi.loadbalancer.server.scheme=https",				
         "traefik.http.routers.unifi.middlewares=auth",
       ]
@@ -34,10 +35,10 @@ job "unifi" {
 
       config {
         image = "linuxserver/unifi-network-application"
+        network_mode = "host"        
 				ports = ["http"]
-        network_mode = "host"
 				volumes = [
-          "/mnt/data/volumes/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
+          "/mnt/volumes/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
         ]
       }  
 
