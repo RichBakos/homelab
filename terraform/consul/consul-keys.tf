@@ -41,8 +41,7 @@ resource "consul_key_prefix" "traefik" {
   path_prefix = "homelab/traefik/"
   subkeys = {
     "traefik.yaml" = file("${path.module}/files/traefik/traefik.yaml"),
-    "certs.yaml"   = file("${path.module}/files/traefik/certs.yaml"),
-    "external.yaml" = file("${path.module}/files/traefik/external.yaml"),
+    "dynamic.yaml" = file("${path.module}/files/traefik/dynamic.yaml"),
   }
 }
 
