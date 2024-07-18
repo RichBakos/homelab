@@ -16,6 +16,7 @@ job "loki" {
     service {
       name = "loki"
       port = "http"   
+
       check {
         port     = "http"
         type     = "tcp"
@@ -30,6 +31,7 @@ job "loki" {
 
       config {
         image = "grafana/loki:latest"
+        network_mode = "host"        
         ports = ["http"]        
         args = [
           "-config.file",

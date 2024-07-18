@@ -18,6 +18,7 @@ job "hass" {
       port = "http"
       tags = [
         "traefik.enable=true",
+        "traefik.http.routers.hass.entrypoints=websecure",	        
       ]        
       check {
         type     = "tcp"
@@ -36,8 +37,8 @@ job "hass" {
 			
       config {
         image = "homeassistant/home-assistant:latest"
+        network_mode = "host"        
         ports = ["http"]
-        network_mode = "host"
         volumes = [            
           "local/automations.yaml:/config/automations.yaml",
           "local/configuration.yaml:/config/configuration.yaml",

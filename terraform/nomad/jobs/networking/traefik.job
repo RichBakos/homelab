@@ -10,20 +10,16 @@ job "traefik" {
       port "admin"    { static = "8080" }
       port "postgres" { static = "5432" }     
     } 
-  
-    volume traefik_certs {
-      type = "host"
-      source = "traefik_certs"
-    }
 
     service {
       name = "traefik"
       port = "http"
       tags = [
-        "traefik.enable=true",		
+        "traefik.enable=true",    
+        "traefik.http.routers.api.entrypoints=websecure",               		
         "traefik.http.routers.api.service=api@internal",
         "traefik.http.services.dummy.loadbalancer.server.port=9000",
-        "traefik.http.routers.api.middlewares=auth",
+#        "traefik.http.routers.api.middlewares=auth",
       ]
 
       check {
@@ -38,19 +34,14 @@ job "traefik" {
 
       config {
         image = "traefik:2.11.2"
+        network_mode = "host"         
         ports = ["http", "https", "postgres"]
-        network_mode = "host" 
         volumes = [
           "local/traefik.yaml:/etc/traefik/traefik.yaml",
-          "local/certs.yaml:/etc/traefik/common/certs.yaml",
+          "local/certs.yaml:/etc/traefik/certs/certs.yaml",
           "local/external.yaml:/etc/traefik/common/external.yaml"
         ]        
-      }       
-      
-      volume_mount {
-        volume = "traefik_certs"
-        destination = "/etc/certs"
-      }    
+      }        
 
       resources {
         cpu    =  500

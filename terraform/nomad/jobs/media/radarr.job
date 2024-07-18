@@ -22,7 +22,8 @@ job "radarr" {
       name = "radarr"
       port = "http"
       tags = [
-        "traefik.enable=true",			
+        "traefik.enable=true",	   
+        "traefik.http.routers.radarr.entrypoints=websecure",                               		
         "traefik.http.routers.radarr.middlewares=auth"
       ]  
 

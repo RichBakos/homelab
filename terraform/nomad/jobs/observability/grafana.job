@@ -20,6 +20,7 @@ job "grafana" {
       port = "http"
       tags = [
         "traefik.enable=true",
+        "traefik.http.routers.grafana.entrypoints=websecure",                       
         "traefik.http.routers.grafana.middlewares=auth"        
       ]
 
@@ -37,6 +38,7 @@ job "grafana" {
 
       config {
         image = "grafana/grafana-oss:latest"
+        network_mode = "host"        
         ports = ["http"]
       }
 

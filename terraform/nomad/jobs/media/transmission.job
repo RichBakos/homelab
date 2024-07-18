@@ -22,7 +22,8 @@ job "transmission" {
       name = "transmission"        
       port = "http"
       tags = [ 
-        "traefik.enable=true",       
+        "traefik.enable=true", 	
+        "traefik.http.routers.transmission.entrypoints=websecure",                                     
         "traefik.http.routers.transmission.middlewares=auth",
       ]    
       check {
@@ -38,6 +39,7 @@ job "transmission" {
       config {
         image = "linuxserver/transmission"
         ports = ["http"]   
+        network_mode  = "host"        
         volumes = [
           "watch/:/data/downloads/watch"
         ]      

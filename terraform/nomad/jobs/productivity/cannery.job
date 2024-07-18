@@ -13,7 +13,7 @@ job "cannery" {
       port = "http"
       tags = [
         "traefik.enable=true",			
-        "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=auth"
+        "traefik.http.routers.${NOMAD_JOB_NAME}.middlewares=forward-auth"
       ]        
 
       check {

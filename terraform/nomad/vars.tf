@@ -34,12 +34,12 @@ variable "auth_whitelist_email" {
 
 ###--- Grafana vars ---###
 
-variable "gf_security_admin_user" {
+variable "grafana_email" {
   type        = string
   description = "The username of the grafana admin"
 }
 
-variable "gf_security_admin_password" {
+variable "grafana_password" {
   type        = string
   description = "The password used by the grafana admin"
 }
