@@ -24,7 +24,7 @@ job "plex" {
       tags = [
         "traefik.enable=true",	
         "traefik.http.routers.plex.entrypoints=websecure",                      
-        "traefik.http.routers.plex.middlewares=auth",   
+        #"traefik.http.routers.plex.middlewares=auth",   
       ]        
 
       check {
@@ -39,7 +39,6 @@ job "plex" {
 
       config {
         image        = "plexinc/pms-docker"
-        network_mode = "host"
         ports        = ["http"]
       }
 
