@@ -11,3 +11,4 @@ provider "prowlarr" {
   url     = var.url
   api_key = var.api_key
 }
+
