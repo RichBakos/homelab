@@ -39,18 +39,18 @@ job "radarr" {
       driver = "docker"
 		           
       config {
-        image 	= "linuxserver/radarr"
-        network_mode = "host"				
-        ports 	= ["http"]
+        image 	      = "linuxserver/radarr"			
+        ports 	      = ["http"]
+        network_mode  = "host"	        
       }    
 
       volume_mount {
-        volume = "radarr"
+        volume      = "radarr"
         destination = "/config"
       }       
 
       volume_mount {
-        volume = "media"
+        volume      = "media"
         destination = "/data"
       }          
 				

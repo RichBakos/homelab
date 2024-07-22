@@ -27,13 +27,13 @@ job "samba" {
       driver = "docker"
 
       config {
-        image = "servercontainers/samba:latest"		
-        ports = ["smb"]
-        network_mode = "host"		        
+        image         = "servercontainers/samba:latest"		
+        ports         = ["smb"]
+        network_mode  = "host"		        
       } 
       
       volume_mount {
-        volume = "samba"
+        volume      = "samba"
         destination = "/shares/homelab"
       } 
 
@@ -43,9 +43,9 @@ job "samba" {
       }         
 
       template {
-        env = true
+        env         = true
         destination = "secrets/env"        
-        data = <<EOF
+        data        = <<EOF
 {{- with nomadVar "nomad/jobs/forward-auth" }}
 {{- range .Tuples }}
 {{ .K }}={{ .V }}
