@@ -17,8 +17,8 @@ job "mass" {
       name = "mass"
       port = "http"
       tags = [
-        "traefik.enable=true",	          
-        "traefik.http.routers.mass.entrypoints=websecure",    	
+        "traefik.enable=true",
+        "traefik.http.routers.mass.entrypoints=websecure", 
         "traefik.http.routers.mass.middlewares=auth"
       ]
 
@@ -34,7 +34,7 @@ job "mass" {
 
       config {
         image 	= "ghcr.io/music-assistant/server"
-        network_mode = "host"        
+        network_mode = "host"
         ports 	= ["http"]
       }
 
