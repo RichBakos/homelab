@@ -24,7 +24,7 @@ job "traefik" {
         "traefik.http.routers.api.entrypoints=websecure",               		
         "traefik.http.routers.api.service=api@internal",
         "traefik.http.services.dummy.loadbalancer.server.port=9000",
-#        "traefik.http.routers.api.middlewares=auth",
+        "traefik.http.routers.api.middlewares=auth",
       ]
 
       check {
@@ -38,17 +38,17 @@ job "traefik" {
       driver = "docker"
 
       config {
-        image = "traefik:2.11.2"
-        network_mode = "host"         
-        ports = ["http", "https", "postgres"]
-        volumes = [
+        image         = "traefik:2.11.2"
+        ports         = ["http", "https", "postgres"]        
+        network_mode  = "host"         
+        volumes       = [
           "local/traefik.yaml:/etc/traefik/traefik.yaml",
           "local/dynamic.yaml:/etc/traefik/dynamic/dynamic.yaml"
         ]        
       }   
 
       volume_mount {
-        volume = "traefik_certs"
+        volume      = "traefik_certs"
         destination = "/etc/traefik/certs"
       }              
 

@@ -7,13 +7,17 @@ entryPoints:
           to: websecure
           scheme: https
           permanent: true
-         
-
+    proxyProtocol:
+      trustedIPs:         
+        - 172.16.30.1
+        
   websecure:
     address: :443
     http:
       tls: true
-
+    proxyProtocol:
+      trustedIPs:
+        - 172.16.30.1
 
   postgres:
     address: :5432

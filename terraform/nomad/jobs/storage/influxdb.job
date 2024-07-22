@@ -1,5 +1,5 @@
 job "influxdb" {
-  type = "service"
+  type      = "service"
   namespace = "storage"
 
   group "influxdb" {
@@ -14,8 +14,8 @@ job "influxdb" {
     }
 
     volume "influxdb-data" {
-      type   = "host"
-      source = "influxdb-data"
+      type    = "host"
+      source  = "influxdb-data"
     }
 
     service {
@@ -28,10 +28,10 @@ job "influxdb" {
       ]  
 
       check {
-        type     = "tcp"
-        port     = "http"
-        interval = "10s"
-        timeout  = "30s"
+        type      = "tcp"
+        port      = "http"
+        interval  = "10s"
+        timeout   = "30s"
       }
     } 
 
@@ -39,30 +39,30 @@ job "influxdb" {
       driver = "docker"
       
       config {
-        image = "influxdb:alpine"
-        network_mode = "host"        
-        ports = [ "http" ]
+        image         = "influxdb:alpine"        
+        ports         = [ "http" ]
+        network_mode  = "host"        
       }
 
       volume_mount {
-        volume = "influxdb-data"
+        volume      = "influxdb-data"
         destination = "/var/lib/influxdb2"
       }  
 
       volume_mount {
-        volume = "influxdb-config"
+        volume      = "influxdb-config"
         destination = "/etc/influxdb2"
       }       
 
       resources {
-        cpu    = 1000
-        memory = 1024
+        cpu     = 1000
+        memory  = 1024
       }               
 
       template {
         env = true
         destination = "secrets/.env"
-        data = <<EOF
+        data        = <<EOF
 {{- with nomadVar "nomad/jobs/influxdb" }}
 {{- range .Tuples }}
 {{ .K }}={{ .V }}
