@@ -6,7 +6,7 @@ I'm running a 3 node [Proxmox](https://www.proxmox.com/en/) cluster across these
 
 ## Workloads
 
-Here are the workloads I run:
+Here are a few of the workloads I run:
 
 * [forwardAuth](https://github.com/thomseddon/traefik-forward-auth) - OAuth/SSO login and authentication for the traefik reverse proxy/load balancer.
 * [Traefik](https://traefik.io) - I have HaProxy (via [pfSense](https://www.pfsense.org)) balancing requests to Traefik running as a system job.

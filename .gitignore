@@ -1,6 +1,5 @@
-.*
 .gitignore
-.terraform
+.*
 *.tfvars
 .tfstate
 

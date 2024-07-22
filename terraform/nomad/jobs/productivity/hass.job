@@ -1,5 +1,5 @@
 job "hass" {
-  type     = "service"
+  type      = "service"
   namespace = "productivity"
 
   group "hass" {
@@ -9,8 +9,8 @@ job "hass" {
     }
 
     volume "hass" {
-      type   = "host"
-      source = "hass"
+      type    = "host"
+      source  = "hass"
     }
 
     service {
@@ -21,9 +21,9 @@ job "hass" {
         "traefik.http.routers.hass.entrypoints=websecure",	        
       ]        
       check {
-        type     = "tcp"
-        interval = "10s"
-        timeout  = "2s"
+        type      = "tcp"
+        interval  = "10s"
+        timeout   = "2s"
       }
     }
 
@@ -31,15 +31,15 @@ job "hass" {
       driver = "docker"
 
       volume_mount {
-        volume = "hass"
+        volume      = "hass"
         destination = "/config"
       }       
 			
       config {
-        image = "homeassistant/home-assistant:latest"
-        network_mode = "host"        
-        ports = ["http"]
-        volumes = [            
+        image         = "homeassistant/home-assistant:latest"
+        ports         = ["http"]
+        network_mode  = "host"        
+        volumes       = [            
           "local/automations.yaml:/config/automations.yaml",
           "local/configuration.yaml:/config/configuration.yaml",
           "local/covers.yaml:/config/covers.yaml",
@@ -49,8 +49,8 @@ job "hass" {
       }
 
       resources {
-        cpu    = 1000
-        memory = 1024
+        cpu     = 1000
+        memory  = 1024
       }
 
       template {

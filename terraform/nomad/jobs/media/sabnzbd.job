@@ -9,13 +9,13 @@ job "sabnzbd" {
     }
 
       volume sabnzbd {
-        type = "host"
-        source = "sabnzbd"
+        type    = "host"
+        source  = "sabnzbd"
       }       
 
       volume media {
-        type = "host"
-        source = "media"
+        type    = "host"
+        source  = "media"
       }         
 
     service {
@@ -39,18 +39,18 @@ job "sabnzbd" {
       driver = "docker"  
 
       config {
-        image = "linuxserver/sabnzbd"
-        network_mode = "host"          
-        ports = ["http"]
+        image         = "linuxserver/sabnzbd"         
+        ports         = ["http"]
+        network_mode  = "host"         
       }  
 
       volume_mount {
-        volume = "sabnzbd"
+        volume      = "sabnzbd"
         destination = "/config"
       }       
 
       volume_mount {
-        volume = "media"
+        volume      = "media"
         destination = "/data"
       }        
 
