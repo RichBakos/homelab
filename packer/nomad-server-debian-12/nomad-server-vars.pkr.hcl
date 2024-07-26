@@ -5,7 +5,7 @@ variable "iso_file" {
 
 variable "iso_url" {
   type    = string
-  default = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.6.0-amd64-netinst.iso"
+  default = ""
 }
 
 variable "iso_storage_pool" {
@@ -20,18 +20,18 @@ variable "iso_checksum" {
 
 variable "vm_name" {
   type = string
-  default = "pckr-tmpl-debian-12"
+  default = "nomad-client-debian-12"
 }
 
 variable "vmid" {
   type = string
   description = "Proxmox Template ID"
-  default = "9999"
+  default = "9001"
 }
 
 variable "cpu_type" {
   type    = string
-  default = "kvm64"
+  default = "host"
 }
 
 variable "cores" {
@@ -81,6 +81,16 @@ variable "proxmox_host" {
 }
 
 variable "proxmox_node" {
+  type    = string
+  default = ""
+}
+
+variable "vm_user" {
+  type    = string
+  default = ""
+}
+
+variable "vm_password" {
   type    = string
   default = ""
 }
