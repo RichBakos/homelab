@@ -6,6 +6,8 @@ DEBIAN_FRONTEND=noninteractive
 
 COREDNS_VERSION='1.11.1'
 
+dpkg --configure -a
+
 # Add Gluster client
 wget -O - https://download.gluster.org/pub/gluster/glusterfs/9/rsa.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/gluster.gpg
 DEBID=$(grep 'VERSION_ID=' /etc/os-release | cut -d '=' -f 2 | tr -d '"')
@@ -41,14 +43,41 @@ sudo tar -xvvf /tmp/coredns.tgz --directory /tmp
 sudo chmod +x /tmp/coredns
 sudo mv /tmp/coredns /usr/local/bin
 sudo mkdir -p /opt/coredns /etc/coredns
-sudo apt install -y resolvconf
-echo 'nameserver 127.0.0.1' | sudo tee -a /etc/resolvconf/resolv.conf.d/head > /dev/null
 sudo useradd -d /var/lib/coredns -m coredns
 sudo chown coredns:coredns /opt/coredns
 
 # Remove Nomad and Consul defaults
 sudo rm /etc/consul.d/*
 sudo rm /etc/nomad.d/*
+
+# Copy config files to destination
+sudo cp /tmp/configs/cloud/* /etc/cloud/
+sudo cp /tmp/configs/consul/* /etc/consul.d/
+sudo cp /tmp/configs/coredns/corefile /etc/coredns/
+sudo cp /tmp/configs/coredns/coredns.service /etc/systemd/system/
+
+# Add gluster mount in fstab
+sudo echo "172.16.20.202:/data /mnt glusterfs defaults,_netdev,noauto,x-systemd.automount,backupvolfile-server=172.16.20.203 0 0" >> /etc/fstab
+
+# Add a media user
+sudo /sbin/groupadd -g 1010 media
+sudo /sbin/useradd -M -u 1010 -g 1010 media
+sudo /sbin/usermod -L media
+
+# Populate resolv.conf
+sudo echo 'nameserver 127.0.0.1' > /etc/resolv.conf
+
+# Reload systemctl services
+sudo systemctl daemon-reload
+
+# Enable systemctl services
+sudo systemctl enable coredns
+sudo systemctl enable consul
+sudo systemctl enable nomad
+sudo mount -a
+
+# Clean out tmp
+sudo find /tmp -type f -atime +10 -delete
 
 # Finish
 exit 0

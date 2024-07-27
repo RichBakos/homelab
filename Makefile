@@ -1,3 +1,5 @@
+include .env
+
 nomad-validate:
 	./scripts/validate-jobs.sh
 
@@ -15,3 +17,6 @@ apply:
 
 format:
 	cd terraform && terraform fmt -recursive -check
+
+build-%:
+	cd packer/debian12-$* && packer build .
