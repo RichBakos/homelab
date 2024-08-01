@@ -39,7 +39,7 @@ job "sonarr" {
       driver = "docker"   
 
       config {
-        image = "linuxserver/sonarr"
+        image = "lscr.io/linuxserver/sonarr:4.0.8"
         ports = ["http"]
         network_mode = "host"
       }	 

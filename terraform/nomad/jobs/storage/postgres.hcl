@@ -40,7 +40,7 @@ job "postgres" {
       }
 
       config {
-        image = "postgres"
+        image = "postgres:12.19"
         ports = [ "postgres" ]
       }
 

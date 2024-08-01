@@ -62,12 +62,17 @@ http:
     nomad:
       loadbalancer:
         servers:
-          - url: http://clarkson.bakos.lan:4646                 
+          - url: http://server01.bakos.lan:4646                 
+          - url: http://server02.bakos.lan:4646                 
+          - url: http://server03.bakos.lan:4646                 
+
 
     consul:
       loadbalancer:
         servers:
-          - url: http://clarkson.bakos.lan:8500
+          - url: http://server01.bakos.lan:8500
+          - url: http://server02.bakos.lan:8500
+          - url: http://server03.bakos.lan:8500
 
     pfsense:
       loadbalancer:

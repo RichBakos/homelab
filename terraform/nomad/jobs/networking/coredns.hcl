@@ -6,12 +6,12 @@ job "coredns" {
     network {
       port "dns" { static = "53" }
     }    
-  
+
     task "coredns" {
       driver = "docker"
 
       config {
-        image 			 = "coredns/coredns"
+        image 			 = "coredns/coredns:1.11.3"
         network_mode = "host"
         ports 			 = ["dns"]
         args 				 = ["-conf", "/local/coredns/corefile"]

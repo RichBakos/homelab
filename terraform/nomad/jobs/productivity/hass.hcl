@@ -36,7 +36,7 @@ job "hass" {
       }       
 			
       config {
-        image         = "homeassistant/home-assistant:latest"
+        image         = "homeassistant/home-assistant:2024.7"
         ports         = ["http"]
         network_mode  = "host"        
         # volumes       = [            

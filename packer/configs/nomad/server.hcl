@@ -12,9 +12,9 @@ server {
 }
 
 advertise {
-  http = "{{ GetInterfaceIP \"eth0\" }}:4646"
-  rpc = "{{ GetInterfaceIP \"eth0\" }}:4647"
-  serf = "{{ GetInterfaceIP \"eth0\" }}:4648"
+  http = "{{GetInterfaceIP \"np6s18\"}}:4646"
+  rpc = "{{GetInterfaceIP \"np6s18\"}}:4647"
+  serf = "{{GetInterfaceIP \"np6s18\"}}:4648"
 }
 
 consul {

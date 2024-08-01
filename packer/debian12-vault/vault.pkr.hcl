@@ -19,12 +19,12 @@ source "proxmox-iso" "debian12-vault" {
 
   vm_id                   = "9003"
   vm_name                 = "debian12-vault-template"
-  template_description    = "Debian 12 Template-- Created: ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
+  template_description    = "Debian 12 Template (Vault Server)-- Created: ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
   os                      = "l26"
   cpu_type                = "host"
   sockets                 = "1"
-  cores                   = "4"
-  memory                  = "8192"
+  cores                   = "2"
+  memory                  = "2048"
   machine                 = "q35"
   bios                    = "seabios"
   scsi_controller         = "virtio-scsi-single"
@@ -50,7 +50,7 @@ source "proxmox-iso" "debian12-vault" {
   iso_storage_pool = "local"
   unmount_iso      = true
 
-  http_directory = "http"
+  http_directory = "../http"
   http_port_min  = 8100
   http_port_max  = 8100
   boot_wait      = "10s"
@@ -64,21 +64,39 @@ source "proxmox-iso" "debian12-vault" {
 build {
   sources = ["source.proxmox-iso.debian12-vault"]
 
-  # Copy scripts up to temp
+  # Copy local scripts up to temp
   provisioner "file" {
     destination = "/tmp"
     source      = "./scripts"
   }
 
+    # Copy global scripts up to temp
+  provisioner "file" {
+    destination = "/tmp"
+    source      = "../scripts"
+  }
+
   # Copy configs up to temp
   provisioner "file" {
     destination = "/tmp"
-    source      = "./configs"
+    source      = "../configs"
   }
 
-  # Execute the provisioner
+  # Add repos
   provisioner "shell" {
     inline_shebang  = "/bin/bash -e"
-    inline          = ["/bin/bash /tmp/scripts/provisioner.sh"]
+    inline          = ["/bin/bash /tmp/scripts/add-repos.sh"]
+  }
+
+  # Provision
+  provisioner "shell" {
+    inline_shebang  = "/bin/bash -e"
+    inline          = ["/bin/bash /tmp/scripts/provision.sh"]
+  }
+
+  # Cleanup
+  provisioner "shell" {
+    inline_shebang  = "/bin/bash -e"
+    inline          = ["/bin/bash /tmp/scripts/cleanup.sh"]
   }
 }

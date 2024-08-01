@@ -38,6 +38,10 @@ resource "nomad_job" "influxdb" {
   jobspec = file("${path.module}/jobs/storage/influxdb.hcl")
 }
 
+resource "nomad_job" "jellyfin" {
+  jobspec = file("${path.module}/jobs/media/jellyfin.hcl")
+}
+
 resource "nomad_job" "loki" {
   jobspec = file("${path.module}/jobs/observability/loki.hcl")
 }
@@ -84,12 +88,13 @@ resource "nomad_job" "transmission" {
 
 resource "nomad_job" "unifi" {
   jobspec = file("${path.module}/jobs/networking/unifi.hcl")
+  depends_on = [ nomad_job.unifi ]
 }
 
-resource "nomad_job" "vector" {
-  jobspec = file("${path.module}/jobs/observability/vector.hcl")
-  depends_on = [ nomad_job.loki ]
-}
+# resource "nomad_job" "vector" {
+#   jobspec = file("${path.module}/jobs/observability/vector.hcl")
+#   depends_on = [ nomad_job.loki ]
+# }
 
 resource "nomad_job" "wikijs" {
   jobspec = file("${path.module}/jobs/productivity/wikijs.hcl")

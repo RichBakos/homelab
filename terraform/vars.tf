@@ -24,7 +24,7 @@ variable "auth_domain" {
 
 variable "auth_client_id" {
   type        = string
-  description = "The client ID ofr hte forwardAuth plugin for Traefik"
+  description = "The client ID for hte forwardAuth plugin for Traefik"
 }
 
 variable "auth_client_secret" {

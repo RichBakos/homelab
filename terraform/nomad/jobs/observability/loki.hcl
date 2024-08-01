@@ -30,7 +30,7 @@ job "loki" {
       user = "10001:10001"      
 
       config {
-        image = "grafana/loki:latest"
+        image = "grafana/loki:main"
         network_mode = "host"        
         ports = ["http"]        
         args = [

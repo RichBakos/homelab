@@ -38,7 +38,7 @@ job "prowlarr" {
       driver = "docker"
 
       config {
-        image 	= "linuxserver/prowlarr"       
+        image 	= "lscr.io/linuxserver/prowlarr:1.21.2"       
         ports 	= ["http"]
         network_mode = "host"           
       }

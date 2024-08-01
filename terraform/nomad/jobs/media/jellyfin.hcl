@@ -1,16 +1,16 @@
-job "plex" {
+job "jellyfin" {
   type      = "service"
   namespace = "media"
 
-  group "plex" {
+  group "jellyfin" {
 
     network {
-      port "http" { static = 32400 }
+      port "http" { static = 8096 }
     }
 
-    volume "plex" {
+    volume "jellyfin" {
       type   = "host"
-      source = "plex"
+      source = "jellyfin"
     }
 
     volume "media" {
@@ -19,11 +19,12 @@ job "plex" {
     }
 
     service {
-      name = "plex"
+      name = "jellyfin"
       port = "http"
       tags = [
         "traefik.enable=true",	
-        "traefik.http.routers.plex.entrypoints=websecure",                        
+        "traefik.http.routers.jellyfin.entrypoints=websecure", 
+        "traefik.http.routers.jellyfin.middlewares=auth"                               
       ]        
 
       check {
@@ -33,30 +34,30 @@ job "plex" {
       }
     }   
 
-    task "plex" {
+    task "jellyfin" {
       driver = "docker"    
 
       config {
-        image        = "plexinc/pms-docker:1.40.4.8679-424562606"
+        image        = "lscr.io/linuxserver/jellyfin:10.9.8"
         ports        = ["http"]
         network_mode = "host"           
       }
 
+      env {
+        PUID="1010"
+        PGID="1010"
+        JELLYFIN_PublishedServerUrl="https://jellyfin.bakos.me"
+      }  
+
       volume_mount {
-        volume      = "plex"
-        destination = "/config"
+        volume      = "jellyfin"
+        destination = "/config/cache"
       }      
 
       volume_mount {
         volume      = "media"
         destination = "/data"
-      }        
-
-      env {
-        PLEX_UID="1010"
-        PLEX_GID="1010"
-        PLEX_CLAIM="claim-VUHpdd_zYs9PenZB37Hk"
-      }   
+      }         
 
       resources {
         cpu    = 1500

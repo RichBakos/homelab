@@ -13,7 +13,8 @@ job "keepalived" {
         cap_add = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]  
         args = [ "--copy-service" ]
         volumes = [
-          "local/keepalived.conf:/container/service/keepalived/assets/keepalived.conf"
+          "local/keepalived.conf:/user/local/etc/keepalived/keepalived.conf",
+          "local/keepalived.conf:/container/service/keepalived/assets/keepalived.conf"          
         ]           
       }
 
@@ -43,7 +44,7 @@ vrrp_instance VI_1 {
   }
 
   virtual_ipaddress {
-    172.16.30.5/24
+    172.16.30.2/24
   }
 
   authentication {

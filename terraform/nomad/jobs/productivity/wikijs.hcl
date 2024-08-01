@@ -34,7 +34,7 @@ job "wikijs" {
       driver = "docker"
 			
       config {
-        image = "linuxserver/wikijs"
+        image = "linuxserver/wikijs:2.5.303"
         network_mode = "host"        
         ports = ["http"]
       }

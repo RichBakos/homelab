@@ -37,7 +37,7 @@ job "transmission" {
       driver = "docker"  
 
       config {
-        image = "linuxserver/transmission"
+        image = "llscr.io/linuxserver/transmission:4.0.6"
         ports = ["http"]   
         network_mode  = "host"        
         volumes = [

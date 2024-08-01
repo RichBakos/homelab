@@ -96,10 +96,15 @@ client {
   }
 
   host_volume "traefik_certs" {
-    path      = "/mnt/volumes/traefik/certs"
+    path      = "/mnt/volumes/certs"
     read_only = false
   }
 
+  host_volume "jellyfin" {
+    path      = "/mnt/volumes/jellyfin/cache"
+    read_only = false
+  }
+  
   host_volume "transmission" {
     path      = "/mnt/volumes/transmission"
     read_only = false

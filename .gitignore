@@ -1,1 +1,7 @@
+.*
 .env
+.bak
+.gitignore
+.tfvars
+.pkrvars.hcl
+cloud.cfg

@@ -17,6 +17,7 @@ job "vector" {
 		service {
       name = "vector"
       port = "api"
+      
 			check {
         type     = "tcp"
         port     = "api" 
@@ -28,7 +29,7 @@ job "vector" {
     task "vector" {
       driver = "docker"
       config {
-        image = "timberio/vector:0.14.X-alpine"
+        image = "timberio/vector:0.X-alpine"
         network_mode = "host"        
         ports = ["api"]
       }
@@ -54,10 +55,9 @@ job "vector" {
 {{- key "homelab/vector/vector.toml"}}
 EOF
       }
-
       resources {
         cpu    = 500
-        memory = 256
+        memory = 500
       }			
     }
   }

@@ -39,7 +39,7 @@ job "influxdb" {
       driver = "docker"
       
       config {
-        image         = "influxdb:alpine"        
+        image         = "influxdb:2.7.8-alpine"        
         ports         = [ "http" ]
         network_mode  = "host"        
       }

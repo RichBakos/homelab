@@ -1,6 +1,6 @@
 terraform {
   backend "consul" {
-    address = "clarkson.bakos.lan:8500"
+    address = "server01.bakos.lan:8500"
     scheme  = "http"
     path    = "homelab/terraform"
   }

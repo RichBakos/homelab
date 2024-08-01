@@ -3,7 +3,7 @@ job "nomad-cleanup" {
   namespace = "maintenance"  
 
   periodic {
-    cron             = "@daily"
+    crons            = [ "@daily" ]
     prohibit_overlap = true
   }
 

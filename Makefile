@@ -1,7 +1,7 @@
 include .env
 
 nomad-validate:
-	./scripts/validate-jobs.sh
+	scripts/nomad-validate.sh
 
 init:
 	cd terraform && terraform init

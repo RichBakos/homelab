@@ -5,7 +5,7 @@ job "bitwarden" {
   group "bitwarden" {
     
     network {
-      port "http" { to = 80 }
+      port "http" { to = 8089 }
     }
 
     volume "bitwarden" {
@@ -34,8 +34,12 @@ job "bitwarden" {
     task "bitwarden" {
       driver = "docker"
 
+      env {
+        ROCKET_PORT = 8089
+      }
+
       config {
-        image = "vaultwarden/server:1.25.2"
+        image = "vaultwarden/server:1.31.0"
         network_mode = "host"        
         ports = ["http"]
       }

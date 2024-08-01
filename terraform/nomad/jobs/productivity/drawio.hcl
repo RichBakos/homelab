@@ -27,7 +27,7 @@ job "drawio" {
       driver = "docker"
 
       config {
-        image        = "jgraph/drawio"
+        image        = "jgraph/drawio:24.7.5"
         network_mode = "bridge"
         ports        = ["http"]
       }

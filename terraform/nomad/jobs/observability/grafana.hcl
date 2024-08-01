@@ -37,7 +37,7 @@ job "grafana" {
       user   = "root"
 
       config {
-        image = "grafana/grafana-oss:latest"
+        image = "grafana/grafana-oss:11.1.3"
         network_mode = "host"        
         ports = ["http"]
       }

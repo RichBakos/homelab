@@ -22,8 +22,8 @@ job "sabnzbd" {
       port = "http"
       name = "sabnzbd"
       tags = [
-        "traefik.enable=true",	      
-        "traefik.http.routers.sabnzbd.entrypoints=websecure",                      	      		
+        "traefik.enable=true",
+        "traefik.http.routers.sabnzbd.entrypoints=websecure",
         "traefik.http.routers.sabnzbd.middlewares=auth"
       ]
       
@@ -39,9 +39,9 @@ job "sabnzbd" {
       driver = "docker"  
 
       config {
-        image         = "linuxserver/sabnzbd"         
+        image         = "lscr.io/linuxserver/sabnzbd:4.3.2"
         ports         = ["http"]
-        network_mode  = "host"         
+        network_mode  = "host"
       }  
 
       volume_mount {
