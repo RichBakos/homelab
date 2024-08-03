@@ -1,7 +1,7 @@
 job "vector" {
   type      = "system"
   namespace = "observability"
-  	 
+
   group "vector" {
 
     network {
@@ -9,56 +9,56 @@ job "vector" {
     }
 
     volume "docker-sock" {
-      type = "host"
-      source = "docker-sock-ro"
-			read_only = true
+      type      = "host"
+      source    = "docker-sock-ro"
+      read_only = true
     }
 
-		service {
+    service {
       name = "vector"
       port = "api"
-      
-			check {
+
+      check {
         type     = "tcp"
-        port     = "api" 
-				interval = "20s"
-				timeout  = "5s"
-			}
-		}
+        port     = "api"
+        interval = "20s"
+        timeout  = "5s"
+      }
+    }
 
     task "vector" {
       driver = "docker"
       config {
-        image = "timberio/vector:0.X-alpine"
-        network_mode = "host"        
-        ports = ["api"]
+        image        = "timberio/vector:0.X-alpine"
+        network_mode = "host"
+        ports        = ["api"]
       }
 
-      kill_timeout = "30s"      
+      kill_timeout = "30s"
 
       volume_mount {
-        volume = "docker-sock"
+        volume      = "docker-sock"
         destination = "/var/run/docker.sock"
-        read_only = true
-      }		
+        read_only   = true
+      }
 
       env {
-        VECTOR_CONFIG = "local/vector.toml"
+        VECTOR_CONFIG          = "local/vector.toml"
         VECTOR_REQUIRE_HEALTHY = "false"
-      }    	
+      }
 
       template {
-        destination = "local/vector.toml"      
+        destination   = "local/vector.toml"
         change_mode   = "signal"
-        change_signal = "SIGHUP"       
-        data = <<EOF
+        change_signal = "SIGHUP"
+        data          = <<EOF
 {{- key "homelab/vector/vector.toml"}}
 EOF
       }
       resources {
         cpu    = 500
         memory = 500
-      }			
+      }
     }
   }
 }

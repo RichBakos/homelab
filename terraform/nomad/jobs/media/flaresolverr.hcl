@@ -1,7 +1,7 @@
 job "flaresolverr" {
   type      = "service"
   namespace = "media"
-  
+
   group "flaresolverr" {
 
     network {
@@ -16,42 +16,42 @@ job "flaresolverr" {
     volume "media" {
       type   = "host"
       source = "media"
-    }    
-    
+    }
+
     service {
-      name = "flaresolverr"       
-      port = "http"    	      				
+      name = "flaresolverr"
+      port = "http"
       check {
         type     = "tcp"
         interval = "10s"
         timeout  = "2s"
-      }				
+      }
     }
 
-		task "flaresolverr" {
+    task "flaresolverr" {
       driver = "docker"
 
       config {
-        image   = "ghcr.io/flaresolverr/flaresolverr:latest"
-        ports   = ["http"]        
+        image = "ghcr.io/flaresolverr/flaresolverr:latest"
+        ports = ["http"]
       }
 
       volume_mount {
-        volume = "flaresolverr"
+        volume      = "flaresolverr"
         destination = "/config"
-      }      
+      }
 
       volume_mount {
-        volume = "media"
+        volume      = "media"
         destination = "/data"
-      }         
-
-      env { 
-        PUID=1010
-        PGID=1010
-        TZ="America/Denver"         
       }
-      
+
+      env {
+        PUID = 1010
+        PGID = 1010
+        TZ   = "America/Denver"
+      }
+
       resources {
         cpu    = 500
         memory = 512

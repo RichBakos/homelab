@@ -20,8 +20,7 @@ sudo rm /etc/consul.d/*
 sudo rm /etc/nomad.d/*
 
 # Copy config files to destination
-sudo cp /tmp/configs/cloud/* /etc/cloud/
-sudo cp /tmp/configs/consul/* /etc/consul.d/
+sudo cp /tmp/configs/consul/client.hcl /etc/consul.d/consul.hcl
 
 # Reload and enable systemd services
 sudo systemctl daemon-reload

@@ -39,10 +39,13 @@ source "proxmox-iso" "debian12-nomad-client" {
   }
 
   disks {
-    disk_size         = "40G"
-    format            = "raw"
-    storage_pool      = "guests"
-    type              = "scsi"
+    disk_size    = "40G"
+    format       = "raw"
+    storage_pool = "guests"
+    type         = "scsi"
+    ssd          = true
+    discard      = true
+    io_thread    = true
   }
 
   iso_file         = "local:iso/debian-12.6.0-amd64-netinst.iso"
@@ -69,7 +72,7 @@ build {
     source      = "./scripts"
   }
 
-    # Copy global scripts up to temp
+  # Copy global scripts up to temp
   provisioner "file" {
     destination = "/tmp"
     source      = "../scripts"

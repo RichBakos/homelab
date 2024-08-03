@@ -1,17 +1,17 @@
 job "postgres" {
   type      = "service"
   namespace = "storage"
-   
+
   group "postgres" {
 
     network {
-      port  "postgres"  { to = "5432" }
+      port "postgres" { to = "5432" }
     }
 
     volume postgres {
-      type    = "host"
-      source  = "postgres" 
-    }    
+      type   = "host"
+      source = "postgres"
+    }
 
     service {
       name = "postgres"
@@ -21,7 +21,7 @@ job "postgres" {
         "traefik.tcp.routers.postgres.entrypoints=postgres",
         "traefik.tcp.routers.postgres.rule=HostSNI(`*`)",
         "traefik.tcp.services.postgres.loadBalancer.server.port=${NOMAD_HOST_PORT_postgres}"
-      ]      
+      ]
 
       check {
         type     = "tcp"
@@ -29,37 +29,37 @@ job "postgres" {
         interval = "10s"
         timeout  = "30s"
       }
-    }  
+    }
 
     task "postgres" {
       driver = "docker"
-      
+
       volume_mount {
-        volume = "postgres"
+        volume      = "postgres"
         destination = "/var/lib/pgsql/data"
       }
 
       config {
         image = "postgres:12.19"
-        ports = [ "postgres" ]
+        ports = ["postgres"]
       }
 
       template {
-        env = true
+        env         = true
         destination = "secrets/postgres.env"
-        data = <<EOF
+        data        = <<EOF
 {{- with nomadVar "nomad/jobs/postgres" }}
 {{- range .Tuples }}
 {{ .K }}={{ .V }}
 {{- end }}
 {{- end }}
 EOF
-      }  
+      }
 
       resources {
         cpu    = 1000
         memory = 1024
-      }             
+      }
     }
   }
 }

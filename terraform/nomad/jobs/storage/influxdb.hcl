@@ -5,7 +5,7 @@ job "influxdb" {
   group "influxdb" {
 
     network {
-      port  "http"  { static = "8086" }
+      port "http" { static = "8086" }
     }
 
     volume "influxdb-config" {
@@ -14,53 +14,53 @@ job "influxdb" {
     }
 
     volume "influxdb-data" {
-      type    = "host"
-      source  = "influxdb-data"
+      type   = "host"
+      source = "influxdb-data"
     }
 
     service {
       name = "influxdb"
       port = "http"
       tags = [
-        "traefik.enable=true",		
-        "traefik.http.routers.influxdb.entrypoints=websecure",        			
-        "traefik.http.routers.influxdb.middlewares=auth"				
-      ]  
+        "traefik.enable=true",
+        "traefik.http.routers.influxdb.entrypoints=websecure",
+        "traefik.http.routers.influxdb.middlewares=auth"
+      ]
 
       check {
-        type      = "tcp"
-        port      = "http"
-        interval  = "10s"
-        timeout   = "30s"
+        type     = "tcp"
+        port     = "http"
+        interval = "10s"
+        timeout  = "30s"
       }
-    } 
+    }
 
     task "influxdb" {
       driver = "docker"
-      
+
       config {
-        image         = "influxdb:2.7.8-alpine"        
-        ports         = [ "http" ]
-        network_mode  = "host"        
+        image        = "influxdb:2.7.8-alpine"
+        ports        = ["http"]
+        network_mode = "host"
       }
 
       volume_mount {
         volume      = "influxdb-data"
         destination = "/var/lib/influxdb2"
-      }  
+      }
 
       volume_mount {
         volume      = "influxdb-config"
         destination = "/etc/influxdb2"
-      }       
+      }
 
       resources {
-        cpu     = 1000
-        memory  = 1024
-      }               
+        cpu    = 1000
+        memory = 1024
+      }
 
       template {
-        env = true
+        env         = true
         destination = "secrets/.env"
         data        = <<EOF
 {{- with nomadVar "nomad/jobs/influxdb" }}
@@ -69,7 +69,7 @@ job "influxdb" {
 {{- end }}
 {{- end }}        
 EOF
-      }                    
+      }
     }
   }
 }

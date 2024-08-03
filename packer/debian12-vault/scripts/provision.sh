@@ -14,6 +14,9 @@ sudo echo "172.16.20.203 pmx203.bakos.lan" >> /etc/cloud/templates/hosts.debian.
 # Add gluster mount in fstab
 sudo echo "172.16.20.202:/data /mnt glusterfs defaults,_netdev,noauto,x-systemd.automount,backupvolfile-server=172.16.20.203 0 0" >> /etc/fstab
 
+# Copy config files to destination
+sudo cp /tmp/configs/vault/server.hcl /etc/vault.d/vault.hcl
+
 # Reload and enable systemd services
 sudo systemctl daemon-reload
 sudo systemctl enable vault

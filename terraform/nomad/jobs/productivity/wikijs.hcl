@@ -10,18 +10,18 @@ job "wikijs" {
     }
 
     volume "wikijs" {
-      type = "host"
+      type   = "host"
       source = "wikijs"
-    }      
+    }
 
     service {
-      name = "wikijs"      
+      name = "wikijs"
       port = "http"
       tags = [
-        "traefik.enable=true",      
-        "traefik.http.routers.wikijs.entrypoints=websecure",           
-        "traefik.http.routers.wikijs.middlewares=auth",                
-      ] 
+        "traefik.enable=true",
+        "traefik.http.routers.wikijs.entrypoints=websecure",
+        "traefik.http.routers.wikijs.middlewares=auth",
+      ]
 
       check {
         type     = "tcp"
@@ -32,28 +32,28 @@ job "wikijs" {
 
     task "wikijs" {
       driver = "docker"
-			
+
       config {
-        image = "linuxserver/wikijs:2.5.303"
-        network_mode = "host"        
-        ports = ["http"]
+        image        = "linuxserver/wikijs:2.5.303"
+        network_mode = "host"
+        ports        = ["http"]
       }
 
       volume_mount {
-       volume      = "wikijs"
-       destination = "/config"  
+        volume      = "wikijs"
+        destination = "/config"
       }
 
       env {
-        PUID=1010
-        PGID=1010
-        TZ="America/Denver"
+        PUID = 1010
+        PGID = 1010
+        TZ   = "America/Denver"
       }
 
       resources {
         cpu    = 500
         memory = 512
-      }              
+      }
     }
   }
 }

@@ -1,9 +1,9 @@
 job "journalctl-cleanup" {
   type      = "sysbatch"
-  namespace = "maintenance"  
+  namespace = "maintenance"
 
   periodic {
-    crons            = [ "@daily" ]
+    crons            = ["@daily"]
     prohibit_overlap = true
   }
 

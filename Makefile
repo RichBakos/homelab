@@ -1,8 +1,5 @@
 include .env
 
-nomad-validate:
-	scripts/nomad-validate.sh
-
 init:
 	cd terraform && terraform init
 
@@ -15,8 +12,16 @@ plan:
 apply:
 	cd terraform && terraform apply --auto-approve
 
-format:
+terraform-format:
 	cd terraform && terraform fmt -recursive -check
+
+nomad-format:
+	cd terraform/nomad && nomad fmt -recursive -check
+
+validate-jobs:
+	./terraform/scripts/validate-jobs.sh
 
 build-%:
 	cd packer/debian12-$* && packer build .
+
+

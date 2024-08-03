@@ -87,8 +87,8 @@ resource "nomad_job" "transmission" {
 }
 
 resource "nomad_job" "unifi" {
-  jobspec = file("${path.module}/jobs/networking/unifi.hcl")
-  depends_on = [ nomad_job.unifi ]
+  jobspec    = file("${path.module}/jobs/networking/unifi.hcl")
+  depends_on = [nomad_job.unifi]
 }
 
 # resource "nomad_job" "vector" {
@@ -110,4 +110,8 @@ resource "nomad_job" "journalctl_cleanup" {
 
 resource "nomad_job" "nomad_cleanup" {
   jobspec = file("${path.module}/jobs/maintenance/nomad-cleanup.hcl")
+}
+
+resource "nomad_job" "add_keepalived_meta" {
+  jobspec = file("${path.module}/jobs/maintenance/add-keepalived-meta.hcl")
 }

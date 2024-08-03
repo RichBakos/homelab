@@ -1,27 +1,27 @@
 job "keepalived" {
   type      = "system"
-  namespace = "networking"  
-  
+  namespace = "networking"
+
   group "keepalived" {
-    
+
     task "keepalived" {
       driver = "docker"
 
-			config {
-        image = "osixia/keepalived:2.0.20"
+      config {
+        image        = "osixia/keepalived:2.0.20"
         network_mode = "host"
-        cap_add = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]  
-        args = [ "--copy-service" ]
+        cap_add      = ["NET_ADMIN", "NET_BROADCAST", "NET_RAW"]
+        args         = ["--copy-service"]
         volumes = [
           "local/keepalived.conf:/user/local/etc/keepalived/keepalived.conf",
-          "local/keepalived.conf:/container/service/keepalived/assets/keepalived.conf"          
-        ]           
+          "local/keepalived.conf:/container/service/keepalived/assets/keepalived.conf"
+        ]
       }
 
-      template {    
+      template {
         destination = "local/keepalived.conf"
         change_mode = "restart"
-        data = <<EOF
+        data        = <<EOF
 global_defs {
   default_interface {{ sockaddr "GetPrivateInterfaces | include \"network\" \"172.16.30.0/24\" | attr \"name\"" }}
 }
@@ -30,7 +30,7 @@ vrrp_instance VI_1 {
   interface {{ sockaddr "GetPrivateInterfaces | include \"network\" \"172.16.30.0/24\" | attr \"name\"" }}
 
   virtual_router_id 51
-  priority {{ env "meta.keepalived_priority" }}
+  priority {{ env "meta.keepalived.priority" }}
   nopreempt
 
   unicast_peer {
@@ -61,6 +61,6 @@ EOF
         cpu    = 10
         memory = 12
       }
-    }      
+    }
   }
 }

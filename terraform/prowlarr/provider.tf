@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    prowlarr  = {
+    prowlarr = {
       source  = "devopsarr/prowlarr"
       version = "2.4.0"
     }

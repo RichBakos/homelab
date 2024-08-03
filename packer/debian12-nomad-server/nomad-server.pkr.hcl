@@ -43,8 +43,9 @@ source "proxmox-iso" "debian12-nomad-server" {
     format       = "raw"
     storage_pool = "guests"
     type         = "scsi"
+    ssd          = true
     discard      = true
-    ssd          = true 
+    io_thread    = true
   }
 
   iso_file         = "local:iso/debian-12.6.0-amd64-netinst.iso"

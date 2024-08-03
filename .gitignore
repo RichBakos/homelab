@@ -1,7 +1,5 @@
 .*
 .env
-.bak
 .gitignore
-.tfvars
-.pkrvars.hcl
-cloud.cfg
+*.tfvars
+*.pkrvars.hcl

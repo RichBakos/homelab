@@ -8,11 +8,11 @@ job "pgweb" {
     }
 
     service {
-      name = "pgweb"        
+      name = "pgweb"
       port = "http"
       tags = [
-        "traefik.enable=true",   
-        "traefik.http.routers.pgweb.entrypoints=websecure",                    			
+        "traefik.enable=true",
+        "traefik.http.routers.pgweb.entrypoints=websecure",
         "traefik.http.routers.pgweb.middlewares=auth"
       ]
       check {
@@ -35,7 +35,7 @@ job "pgweb" {
       }
 
       resources {
-        cpu = 128
+        cpu    = 128
         memory = 128
       }
     }

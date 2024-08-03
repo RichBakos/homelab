@@ -18,7 +18,7 @@ source "proxmox-iso" "debian12-vault" {
   node                     = "pmx201"
 
   vm_id                   = "9003"
-  vm_name                 = "debian12-vault-template"
+  vm_name                 = "debian12-vault"
   template_description    = "Debian 12 Template (Vault Server)-- Created: ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
   os                      = "l26"
   cpu_type                = "host"
@@ -40,10 +40,13 @@ source "proxmox-iso" "debian12-vault" {
   }
 
   disks {
-    disk_size         = "40G"
-    format            = "raw"
-    storage_pool      = "guests"
-    type              = "scsi"
+    disk_size    = "16G"
+    format       = "raw"
+    storage_pool = "guests"
+    type         = "scsi"
+    ssd          = true
+    discard      = true
+    io_thread    = true
   }
 
   iso_file         = "local:iso/debian-12.6.0-amd64-netinst.iso"

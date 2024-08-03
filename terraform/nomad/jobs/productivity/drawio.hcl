@@ -12,8 +12,8 @@ job "drawio" {
       name = "drawio"
       port = "http"
       tags = [
-        "traefik.enable=true",	
-        "traefik.http.routers.drawio.entrypoints=websecure",             				
+        "traefik.enable=true",
+        "traefik.http.routers.drawio.entrypoints=websecure",
         "traefik.http.routers.drawio.middlewares=auth"
       ]
       check {
@@ -21,7 +21,7 @@ job "drawio" {
         interval = "10s"
         timeout  = "2s"
       }
-    }   
+    }
 
     task "drawio" {
       driver = "docker"
@@ -35,7 +35,7 @@ job "drawio" {
       resources {
         cpu    = 1500
         memory = 1536
-      }            
+      }
     }
   }
 }

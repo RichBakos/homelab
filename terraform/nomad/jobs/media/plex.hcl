@@ -22,46 +22,46 @@ job "plex" {
       name = "plex"
       port = "http"
       tags = [
-        "traefik.enable=true",	
-        "traefik.http.routers.plex.entrypoints=websecure",                        
-      ]        
+        "traefik.enable=true",
+        "traefik.http.routers.plex.entrypoints=websecure",
+      ]
 
       check {
         type     = "tcp"
         interval = "60s"
         timeout  = "20s"
       }
-    }   
+    }
 
     task "plex" {
-      driver = "docker"    
+      driver = "docker"
 
       config {
         image        = "plexinc/pms-docker:1.40.4.8679-424562606"
         ports        = ["http"]
-        network_mode = "host"           
+        network_mode = "host"
       }
 
       volume_mount {
         volume      = "plex"
         destination = "/config"
-      }      
+      }
 
       volume_mount {
         volume      = "media"
         destination = "/data"
-      }        
+      }
 
       env {
-        PLEX_UID="1010"
-        PLEX_GID="1010"
-        PLEX_CLAIM="claim-VUHpdd_zYs9PenZB37Hk"
-      }   
+        PLEX_UID   = "1010"
+        PLEX_GID   = "1010"
+        PLEX_CLAIM = "claim-VUHpdd_zYs9PenZB37Hk"
+      }
 
       resources {
         cpu    = 1500
         memory = 1536
-      }            
+      }
     }
   }
 }

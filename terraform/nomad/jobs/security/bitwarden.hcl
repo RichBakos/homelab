@@ -3,23 +3,23 @@ job "bitwarden" {
   namespace = "security"
 
   group "bitwarden" {
-    
+
     network {
       port "http" { to = 8089 }
     }
 
     volume "bitwarden" {
-      type            = "host"
-      source          = "bitwarden"
-      read_only       = false
+      type      = "host"
+      source    = "bitwarden"
+      read_only = false
     }
 
     service {
       name = "bitwarden"
       port = "http"
       tags = [
-        "traefik.enable=true",	 
-        "traefik.http.routers.bitwarden.entrypoints=websecure",             	       
+        "traefik.enable=true",
+        "traefik.http.routers.bitwarden.entrypoints=websecure",
         "traefik.http.routers.bitwarden.middlewares=auth"
       ]
 
@@ -39,9 +39,9 @@ job "bitwarden" {
       }
 
       config {
-        image = "vaultwarden/server:1.31.0"
-        network_mode = "host"        
-        ports = ["http"]
+        image        = "vaultwarden/server:1.31.0"
+        network_mode = "host"
+        ports        = ["http"]
       }
 
       volume_mount {

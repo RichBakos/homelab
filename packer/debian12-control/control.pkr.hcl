@@ -1,12 +1,12 @@
 variable "proxmox_api_user" {
-  type = string
+  type    = string
   default = env("proxmox_api_user")
 }
 
 variable "proxmox_api_password" {
-  type = string
-  sensitive = true  
-  default = env("proxmox_api_password")
+  type      = string
+  sensitive = true
+  default   = env("proxmox_api_password")
 }
 
 source "proxmox-iso" "debian12-control" {
@@ -17,7 +17,7 @@ source "proxmox-iso" "debian12-control" {
   node                     = "pmx201"
 
   vm_id                   = "9000"
-  vm_name                 = "debian12-control-template"
+  vm_name                 = "debian12-control"
   template_description    = "Debian 12 Template (Control Plane) -- Created: ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
   os                      = "l26"
   cpu_type                = "host"
@@ -39,10 +39,13 @@ source "proxmox-iso" "debian12-control" {
   }
 
   disks {
-    disk_size         = "16G"
-    format            = "raw"
-    storage_pool      = "guests"
-    type              = "scsi"
+    disk_size    = "16G"
+    format       = "raw"
+    storage_pool = "guests"
+    type         = "scsi"
+    ssd          = true
+    discard      = true
+    io_thread    = true
   }
 
   iso_file         = "local:iso/debian-12.6.0-amd64-netinst.iso"
@@ -69,7 +72,7 @@ build {
     source      = "./scripts"
   }
 
-    # Copy global scripts up to temp
+  # Copy global scripts up to temp
   provisioner "file" {
     destination = "/tmp"
     source      = "../scripts"
@@ -83,17 +86,19 @@ build {
 
   # Add repos
   provisioner "shell" {
-    inline_shebang  = "/bin/bash -e"
-    inline          = ["/bin/bash /tmp/scripts/add-repos.sh"]
+    inline_shebang = "/bin/bash -e"
+    inline         = ["/bin/bash /tmp/scripts/add-repos.sh"]
   }
-    # Provision
+
+  # Provision
   provisioner "shell" {
-    inline_shebang  = "/bin/bash -e"
-    inline          = ["/bin/bash /tmp/scripts/provision.sh"]
+    inline_shebang = "/bin/bash -e"
+    inline         = ["/bin/bash /tmp/scripts/provision.sh"]
   }
-    # Cleanup
+
+  # Cleanup
   provisioner "shell" {
-    inline_shebang  = "/bin/bash -e"
-    inline          = ["/bin/bash /tmp/scripts/cleanup.sh"]
+    inline_shebang = "/bin/bash -e"
+    inline         = ["/bin/bash /tmp/scripts/cleanup.sh"]
   }
 }

@@ -6,11 +6,11 @@ job "mass" {
 
     network {
       port "http" { static = "8095" }
-    }		 
+    }
 
     volume mass {
-      type    = "host"
-      source  = "mass" 
+      type   = "host"
+      source = "mass"
     }
 
     service {
@@ -18,7 +18,7 @@ job "mass" {
       port = "http"
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.mass.entrypoints=websecure", 
+        "traefik.http.routers.mass.entrypoints=websecure",
         "traefik.http.routers.mass.middlewares=auth"
       ]
 
@@ -33,20 +33,20 @@ job "mass" {
       driver = "docker"
 
       config {
-        image 	= "ghcr.io/music-assistant/server"
+        image        = "ghcr.io/music-assistant/server"
         network_mode = "host"
-        ports 	= ["http"]
+        ports        = ["http"]
       }
 
       volume_mount {
-        volume = "mass"
+        volume      = "mass"
         destination = "/data"
-      }  
+      }
 
       resources {
         cpu    = 500
         memory = 512
-      }         
+      }
     }
   }
 }

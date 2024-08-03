@@ -14,24 +14,24 @@ job "mongo" {
     }
 
     service {
-      name = "mongo"        
-      port = "mongo"    
-    }		
+      name = "mongo"
+      port = "mongo"
+    }
 
     task "mongo" {
       driver = "docker"
 
       config {
-        image = "docker.io/mongo:6.0.14"
-        network_mode = "host"        
-	      ports = ["mongo"]	
-	      volumes = [
+        image        = "docker.io/mongo:6.0.14"
+        network_mode = "host"
+        ports        = ["mongo"]
+        volumes = [
           "/mnt/volumes/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro",
         ]
       }
 
       volume_mount {
-        volume = "mongo"
+        volume      = "mongo"
         destination = "/data/db"
       }
 

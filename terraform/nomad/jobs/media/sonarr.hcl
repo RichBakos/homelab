@@ -6,15 +6,15 @@ job "sonarr" {
 
     network {
       port "http" { static = "8989" }
-    }	 
+    }
 
     volume sonarr {
-      type    = "host"
-      source  = "sonarr" 
+      type   = "host"
+      source = "sonarr"
     }
 
     volume media {
-      type = "host"
+      type   = "host"
       source = "media"
     }
 
@@ -22,11 +22,11 @@ job "sonarr" {
       name = "sonarr"
       port = "http"
       tags = [
-        "traefik.enable=true", 
-        "traefik.http.routers.sonarr.entrypoints=websecure",                       			        
+        "traefik.enable=true",
+        "traefik.http.routers.sonarr.entrypoints=websecure",
         "traefik.http.routers.sonarr.middlewares=auth",
       ]
-      
+
       check {
         type     = "tcp"
         port     = "http"
@@ -36,34 +36,34 @@ job "sonarr" {
     }
 
     task "sonarr" {
-      driver = "docker"   
+      driver = "docker"
 
       config {
-        image = "lscr.io/linuxserver/sonarr:4.0.8"
-        ports = ["http"]
+        image        = "lscr.io/linuxserver/sonarr:4.0.8"
+        ports        = ["http"]
         network_mode = "host"
-      }	 
+      }
 
       volume_mount {
-        volume = "sonarr"
+        volume      = "sonarr"
         destination = "/config"
-      }       
+      }
 
       volume_mount {
-        volume = "media"
+        volume      = "media"
         destination = "/data"
-      }             
+      }
 
       env {
-        PUID=1010
-        PGID=1010
-        TZ="America/Denver"        
-      } 
+        PUID = 1010
+        PGID = 1010
+        TZ   = "America/Denver"
+      }
 
       resources {
         cpu    = 1000
         memory = 1024
-      }                    
+      }
     }
   }
 }

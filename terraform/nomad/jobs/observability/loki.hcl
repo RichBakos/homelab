@@ -9,13 +9,13 @@ job "loki" {
     }
 
     volume "loki" {
-      type = "host"
+      type   = "host"
       source = "loki"
-    }	    
+    }
 
     service {
       name = "loki"
-      port = "http"   
+      port = "http"
 
       check {
         port     = "http"
@@ -27,12 +27,12 @@ job "loki" {
 
     task "loki" {
       driver = "docker"
-      user = "10001:10001"      
+      user   = "10001:10001"
 
       config {
-        image = "grafana/loki:main"
-        network_mode = "host"        
-        ports = ["http"]        
+        image        = "grafana/loki:main"
+        network_mode = "host"
+        ports        = ["http"]
         args = [
           "-config.file",
           "local/loki/local-config.yaml",
@@ -40,13 +40,13 @@ job "loki" {
       }
 
       volume_mount {
-        volume = "loki"
+        volume      = "loki"
         destination = "/loki"
-      }	     
+      }
 
       template {
         destination = "local/loki/local-config.yaml"
-        data = <<EOF
+        data        = <<EOF
 {{- key "homelab/loki/loki.yaml"}}
 EOF
       }

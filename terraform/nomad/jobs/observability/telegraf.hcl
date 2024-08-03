@@ -1,11 +1,11 @@
 job "telegraf" {
-  type = "system"
-  namespace = "observability"  
+  type      = "system"
+  namespace = "observability"
 
   group "telegraf" {
 
     network {
-      port "http" { to = "9273"}
+      port "http" { to = "9273" }
     }
 
     task "telegraf" {
@@ -22,9 +22,9 @@ job "telegraf" {
       }
 
       config {
-        image = "telegraf:1.31.2"
+        image      = "telegraf:1.31.2"
         privileged = "true"
-        ports = ["http"]
+        ports      = ["http"]
         args = [
           "--config=/local/config.yaml",
         ]
@@ -36,7 +36,7 @@ job "telegraf" {
       }
 
       template {
-      data = <<EOH
+        data        = <<EOH
 [global_tags]
   realm = '${var.region}'
   role = 'nomad'

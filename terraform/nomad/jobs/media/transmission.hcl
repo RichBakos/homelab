@@ -1,6 +1,6 @@
 job "transmission" {
   type      = "service"
-  namespace = "media"    
+  namespace = "media"
 
   group "transmission" {
 
@@ -9,62 +9,62 @@ job "transmission" {
     }
 
     volume transmission {
-      type    = "host"
-      source  = "transmission" 
+      type   = "host"
+      source = "transmission"
     }
 
     volume media {
-      type = "host"
+      type   = "host"
       source = "media"
     }
 
     service {
-      name = "transmission"        
+      name = "transmission"
       port = "http"
-      tags = [ 
-        "traefik.enable=true", 	
-        "traefik.http.routers.transmission.entrypoints=websecure",                                     
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.transmission.entrypoints=websecure",
         "traefik.http.routers.transmission.middlewares=auth",
-      ]    
+      ]
       check {
         type     = "tcp"
         interval = "10s"
-        timeout  = "2s" 
+        timeout  = "2s"
       }
-    }  
+    }
 
     task "transmission" {
-      driver = "docker"  
+      driver = "docker"
 
       config {
-        image = "llscr.io/linuxserver/transmission:4.0.6"
-        ports = ["http"]   
-        network_mode  = "host"        
+        image        = "lscr.io/linuxserver/transmission:4.0.6"
+        ports        = ["http"]
+        network_mode = "host"
         volumes = [
           "watch/:/data/downloads/watch"
-        ]      
+        ]
       }
 
       volume_mount {
-        volume = "transmission"
+        volume      = "transmission"
         destination = "/config"
-      }       
+      }
 
       volume_mount {
-        volume = "media"
+        volume      = "media"
         destination = "/data"
-      }         
+      }
 
       env {
-        PUID=1010
-        PGID=1010
-        TZ="America/Denver"
+        PUID = 1010
+        PGID = 1010
+        TZ   = "America/Denver"
       }
 
       resources {
-        cpu = 500
-        memory = 512      
-      }   
+        cpu    = 500
+        memory = 512
+      }
     }
   }
 }
