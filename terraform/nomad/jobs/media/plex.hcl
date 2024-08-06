@@ -37,7 +37,7 @@ job "plex" {
       driver = "docker"
 
       config {
-        image        = "plexinc/pms-docker:1.40.4.8679-424562606"
+        image        = "plexinc/pms-docker:latest"
         ports        = ["http"]
         network_mode = "host"
       }
@@ -53,9 +53,11 @@ job "plex" {
       }
 
       env {
-        PLEX_UID   = "1010"
-        PLEX_GID   = "1010"
-        PLEX_CLAIM = "claim-VUHpdd_zYs9PenZB37Hk"
+        PLEX_UID = "1010"
+        PLEX_GID = "1010"
+        PUID     = "1010"
+        PGID     = "1010"
+        PLEX_CLAIM = "claim-XF5QPGHuQUV5j-nT-zcM"
       }
 
       resources {

@@ -21,7 +21,6 @@ light: !include lights.yaml
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-    - 192.168.30.1
     - 172.16.30.0/24
   ip_ban_enabled: true
   login_attempts_threshold: 5

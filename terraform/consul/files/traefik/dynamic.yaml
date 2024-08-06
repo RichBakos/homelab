@@ -1,12 +1,12 @@
 tls:
   certificates:
-    - certFile: "/etc/traefik/certs/LetsEncrypt.crt"
-      keyFile: "/etc/traefik/certs/LetsEncrypt.key"
+    - certFile: "/etc/traefik/certs/bakos.me.crt"
+      keyFile: "/etc/traefik/certs/bakos.me.key"
   stores:
     default:
       defaultCertificate:        
-        certFile: "/etc/traefik/certs/LetsEncrypt.crt"
-        keyFile: "/etc/traefik/certs/LetsEncrypt.key"        
+        certFile: "/etc/traefik/certs/bakos.me.crt"
+        keyFile: "/etc/traefik/certs/bakos.me.key"        
 
 http:
   routers:

@@ -41,6 +41,10 @@ job "hass" {
         network_mode = "host"
       }
 
+      env {
+        TZ="America/Denver"
+      }
+
       resources {
         cpu    = 1000
         memory = 1024
